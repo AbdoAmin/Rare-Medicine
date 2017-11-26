@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "671833274904",
+    "firebase_url": "https://pharmacien-e9a90.firebaseio.com",
+    "project_id": "pharmacien-e9a90",
+    "storage_bucket": "pharmacien-e9a90.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671833274904:android:1079b2153f7cb73d",
+        "android_client_info": {
+          "package_name": "com.example.abdoamin.pharmacien"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "671833274904-cs659qd5dhvkuqtde1f5ishti95h23tp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.abdoamin.pharmacien",
+            "certificate_hash": "e0d8aee907ea411d6051ab48d3570898bde6618c"
+          }
+        },
+        {
+          "client_id": "671833274904-qabac6soi67k7pd6erlaum373aktnsuu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIt1kA8dT1r6ZeOjghbWZ5NsasgkkGhd4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "671833274904-qabac6soi67k7pd6erlaum373aktnsuu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
