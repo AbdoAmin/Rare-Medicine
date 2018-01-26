@@ -18,9 +18,9 @@ public class Pharmacy {
 
     private String address;
 
-    private String imgURL;
+    private String img;
 
-    private int phoneNumber;
+    private String phone;
 
     private List<Long> medicine;
 
@@ -31,14 +31,24 @@ public class Pharmacy {
         this.name=name;
     }
 
-    public Pharmacy(String name, double latitude, double longitude, double distance, String address, String imgURL, int phoneNumber, List<Long> medicine) {
+    public Pharmacy(String name, double latitude, double longitude, double distance, String address, String img, String phone) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
         this.address = address;
-        this.imgURL = imgURL;
-        this.phoneNumber = phoneNumber;
+        this.img = img;
+        this.phone = phone;
+    }
+
+    public Pharmacy(String name, double latitude, double longitude, double distance, String address, String imgURL, String phoneNumber, List<Long> medicine) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.distance = distance;
+        this.address = address;
+        this.img = imgURL;
+        this.phone = phoneNumber;
         this.medicine = medicine;
     }
 
@@ -62,12 +72,12 @@ public class Pharmacy {
         return address;
     }
 
-    public String getImgURL() {
-        return imgURL;
+    public String getImg() {
+        return img;
     }
 
-    public int getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
     public List<Long> getMedicine() {
