@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien;
+package com.example.abdoamin.RareMedicine;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

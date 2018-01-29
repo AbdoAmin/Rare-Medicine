@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien;
+package com.example.abdoamin.RareMedicine.activity;
 
 
 import android.content.Intent;
@@ -6,8 +6,9 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
+
+import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,19 +25,20 @@ public class MainActivity extends AppCompatActivity {
 //        Utiltis.searchMedicine(100,this);
 //        Toast.makeText(this, Utiltis.pharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
 //        Utiltis.barCode(MainActivity.this);
+//
+//        Utiltis.searchMedicineByName("revo",this, new Utiltis.ReturnValueResult() {
+//            @Override
+//            public void onResult(Object object) {
+//                if(object==null){
+//                    Toast.makeText(MainActivity.this, "This medicine is not supported /n in our system", Toast.LENGTH_LONG).show();
+//                }
+//                else if(object instanceof String)
+//                    Utiltis.searchMedicine(Long.valueOf((String)object),MainActivity.this);
+//            }
+//        });
 
-        Utiltis.searchMedicineByName("revo",this, new Utiltis.ReturnValueResult() {
-            @Override
-            public void onResult(Object object) {
-                if(object==null){
-                    Toast.makeText(MainActivity.this, "This medicine is not supported /n in our system", Toast.LENGTH_LONG).show();
-                }
-                else if(object instanceof String)
-                    Utiltis.searchMedicine(Long.valueOf((String)object),MainActivity.this);
-            }
-        });
 
-
+        startActivity(new Intent(this,ModeSwitch.class));
 
 
     }

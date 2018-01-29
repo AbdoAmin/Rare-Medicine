@@ -1,16 +1,17 @@
-package com.example.abdoamin.pharmacien;
+package com.example.abdoamin.RareMedicine;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.abdoamin.pharmacien.adapter.MedicineRecycleAdapter;
-import com.example.abdoamin.pharmacien.object.Medicine;
-import com.example.abdoamin.pharmacien.object.Pharmacy;
-import com.google.firebase.database.ChildEventListener;
+import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
+import com.example.abdoamin.RareMedicine.activity.MainActivity;
+import com.example.abdoamin.RareMedicine.activity.PharmacyMap;
+import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
+import com.example.abdoamin.RareMedicine.object.Medicine;
+import com.example.abdoamin.RareMedicine.object.Pharmacy;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,7 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Abdo Amin on 11/25/2017.
@@ -246,6 +246,7 @@ public class Utiltis {
                     mReturnValueResult.onResult(true);
                 } else
                     mReturnValueResult.onResult(false);
+
             }
 
             @Override
@@ -253,7 +254,6 @@ public class Utiltis {
 //                Toast.makeText(mContext, "Faild To search", Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
 
@@ -338,8 +338,23 @@ public class Utiltis {
     }
 
 
+
+    //pass location and Pharmacy to open into map
+    static public  void openPharmacyMap(Pharmacy pharmacy,Context mContext){
+        Intent intent=new Intent(mContext, PharmacyMap.class);
+        intent.putExtra(mContext.getString(R.string.latitude_map),pharmacy.getLatitude());
+        intent.putExtra(mContext.getString(R.string.longitude_map),pharmacy.getLongitude());
+        intent.putExtra(mContext.getString(R.string.img_map),pharmacy.getImg());
+        intent.putExtra(mContext.getString(R.string.name_map),pharmacy.getName());
+        mContext.startActivity(intent);
+
+    }
+
+
+
+
     //this interface act between function and caller to get a return value form background thread
-    interface ReturnValueResult {
+    public interface ReturnValueResult {
         public void onResult(Object object);
     }
 

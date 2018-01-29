@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien.object;
+package com.example.abdoamin.RareMedicine.object;
 
 /**
  * Created by Abdo Amin on 12/10/2017.

@@ -8,28 +8,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:671833274904:android:1079b2153f7cb73d",
+        "mobilesdk_app_id": "1:671833274904:android:9924715946cfa860",
         "android_client_info": {
-          "package_name": "com.example.abdoamin.pharmacien"
+          "package_name": "com.example.abdoamin.RareMedicine"
         }
       },
       "oauth_client": [
         {
-          "client_id": "671833274904-cs659qd5dhvkuqtde1f5ishti95h23tp.apps.googleusercontent.com",
+          "client_id": "671833274904-pl738n56qu1ehlkbps69gjjoppu79hs1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.abdoamin.pharmacien",
-            "certificate_hash": "e0d8aee907ea411d6051ab48d3570898bde6618c"
+            "package_name": "com.example.abdoamin.RareMedicine",
+            "certificate_hash": "081ebe14eb8e430262bcd74fd6ff3ddb346dbd8c"
           }
         },
         {
-          "client_id": "671833274904-qabac6soi67k7pd6erlaum373aktnsuu.apps.googleusercontent.com",
+          "client_id": "671833274904-peicurk4j1c29sq76qek9d3dkafl90kv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDIt1kA8dT1r6ZeOjghbWZ5NsasgkkGhd4"
+          "current_key": "AIzaSyAHS67vFgm4IeF8tsEGzJVJUbC4Pj084d8"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "671833274904-qabac6soi67k7pd6erlaum373aktnsuu.apps.googleusercontent.com",
+              "client_id": "671833274904-peicurk4j1c29sq76qek9d3dkafl90kv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

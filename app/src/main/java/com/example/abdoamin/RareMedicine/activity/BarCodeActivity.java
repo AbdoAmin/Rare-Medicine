@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien;
+package com.example.abdoamin.RareMedicine.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.util.SparseArray;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.List;

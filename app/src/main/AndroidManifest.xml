@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.abdoamin.pharmacien">
+    package="com.example.abdoamin.RareMedicine">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--GBS-->
+    <!-- GBS -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--wifi_GBS-->
+    <!-- wifi_GBS -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -15,15 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.abdoamin.RareMedicine.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BarCodeActivity" >
-        </activity>
+        <activity android:name="com.example.abdoamin.RareMedicine.activity.BarCodeActivity" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDIt1kA8dT1r6ZeOjghbWZ5NsasgkkGhd4" />
+
+        <activity
+            android:name="com.example.abdoamin.RareMedicine.activity.ModeSwitch"
+            android:label="@string/title_activity_mode_switch"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.example.abdoamin.RareMedicine.activity.PharmacyMap"
+            android:label="@string/title_activity_pharmacy_map"></activity>
     </application>
 
 </manifest>

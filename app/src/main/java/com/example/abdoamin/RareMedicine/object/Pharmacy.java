@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien.object;
+package com.example.abdoamin.RareMedicine.object;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ public class Pharmacy {
 
     private List<Long> medicine;
 
-    public Pharmacy(double latitude, double longitude, double distance,String name) {
+    public Pharmacy(String name, double latitude, double longitude, double distance) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
-        this.name=name;
+        this.name = name;
     }
 
     public Pharmacy(String name, double latitude, double longitude, double distance, String address, String img, String phone) {
@@ -82,5 +82,9 @@ public class Pharmacy {
 
     public List<Long> getMedicine() {
         return medicine;
+    }
+
+    public void setUrlPath(String email) {
+        img = "gs://pharmacien-e9a90.appspot.com/pharmacyProfile/" + email + ".jpg";
     }
 }

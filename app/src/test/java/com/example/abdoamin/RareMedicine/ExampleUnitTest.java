@@ -1,4 +1,4 @@
-package com.example.abdoamin.pharmacien;
+package com.example.abdoamin.RareMedicine;
 
 import org.junit.Test;
 
