@@ -10,12 +10,12 @@ import android.os.Bundle;
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_splash);
 
 
 
@@ -24,21 +24,21 @@ public class MainActivity extends AppCompatActivity {
 //        Toast.makeText(this, String.valueOf(Utiltis.userLat) + " , " + String.valueOf(Utiltis.userLng), Toast.LENGTH_LONG).show();
 //        Utiltis.searchMedicine(100,this);
 //        Toast.makeText(this, Utiltis.pharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
-//        Utiltis.barCode(MainActivity.this);
+//        Utiltis.barCode(SplashActivity.this);
 //
 //        Utiltis.searchMedicineByName("revo",this, new Utiltis.ReturnValueResult() {
 //            @Override
 //            public void onResult(Object object) {
 //                if(object==null){
-//                    Toast.makeText(MainActivity.this, "This medicine is not supported /n in our system", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(SplashActivity.this, "This medicine is not supported /n in our system", Toast.LENGTH_LONG).show();
 //                }
 //                else if(object instanceof String)
-//                    Utiltis.searchMedicine(Long.valueOf((String)object),MainActivity.this);
+//                    Utiltis.searchMedicine(Long.valueOf((String)object),SplashActivity.this);
 //            }
 //        });
 
 
-        startActivity(new Intent(this,ModeSwitch.class));
+        startActivity(new Intent(this,SwitchModeActivity.class));
 
 
     }

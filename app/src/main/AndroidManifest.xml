@@ -15,26 +15,34 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.abdoamin.RareMedicine.activity.MainActivity">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.abdoamin.RareMedicine.activity.BarCodeActivity" />
+        <activity android:name=".activity.BarCodeActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDIt1kA8dT1r6ZeOjghbWZ5NsasgkkGhd4" />
 
         <activity
-            android:name="com.example.abdoamin.RareMedicine.activity.ModeSwitch"
+            android:name=".activity.SwitchModeActivity"
             android:label="@string/title_activity_mode_switch"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.abdoamin.RareMedicine.activity.PharmacyMap"
-            android:label="@string/title_activity_pharmacy_map"></activity>
+            android:name=".activity.PharmacyMapActivity"
+            android:label="@string/title_activity_pharmacy_map" />
+        <activity android:name=".activity.PharmacyProfileUserActivity" />
+        <activity android:name=".activity.PharmacyProfileActivity" />
+        <activity android:name=".activity.LogInActivity" />
+        <activity android:name=".activity.SearchMedicineResultActivity" />
+        <activity android:name=".activity.CustomerSearchActivity" />
+        <activity android:name=".activity.SignUpActivity" />
+        <activity android:name=".activity.AddNewMedicineActivity" />
+        <activity android:name=".activity.PharmacyAddMedicineActivity"></activity>
     </application>
 
 </manifest>

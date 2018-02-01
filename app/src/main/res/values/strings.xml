@@ -14,5 +14,9 @@
     <string name="longitude_map" translatable="false">longitude</string>
     <string name="img_map" translatable="false">img</string>
     <string name="name_map" translatable="false">name</string>
+    <string name="email_login">Email</string>
+    <string name="password_login">Password</string>
+    <string name="login">log in</string>
+    <string name="signup_open_activity">sign up</string>
 
 </resources>

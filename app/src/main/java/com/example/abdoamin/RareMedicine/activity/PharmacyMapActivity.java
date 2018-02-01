@@ -10,16 +10,13 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-public class PharmacyMap extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
+public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     private GoogleMap mMap;
@@ -54,21 +51,22 @@ public class PharmacyMap extends FragmentActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng pharmcyLatLng = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions()
-                        .position(pharmcyLatLng)
-                        .title(name)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
-//                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-        );
-        mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(30.619, 32.293))
-                        .title(name)
-//                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher_background))
-//                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-        );
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmcyLatLng, 15));
+//        // Add a marker in Sydney and move the camera
+//        LatLng pharmcyLatLng = new LatLng(latitude, longitude);
+//        mMap.addMarker(new MarkerOptions()
+//                        .position(pharmcyLatLng)
+//                        .title(name)
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
+////                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+//        );
+//        mMap.addMarker(new MarkerOptions()
+//                        .position(new LatLng(30.619, 32.293))
+//                        .title(name)
+////                      .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher_background))
+////                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
+//        );
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmcyLatLng, 15));
+        Utiltis.showAllNearbyPharmacyOnMap(this,Utiltis.pharmacyList,mMap);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {

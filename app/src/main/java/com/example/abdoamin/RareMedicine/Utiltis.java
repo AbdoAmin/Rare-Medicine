@@ -7,11 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
-import com.example.abdoamin.RareMedicine.activity.MainActivity;
-import com.example.abdoamin.RareMedicine.activity.PharmacyMap;
+import com.example.abdoamin.RareMedicine.activity.SplashActivity;
+import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +50,7 @@ public class Utiltis {
      * if though record in list
      * */
     //context mean where this function output appear//TODO show list into ui
-    static public void searchMedicine(final long medID, final Context mContext) {
+    static public void searchMedicine( final Context mContext,final long medID) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -103,7 +108,7 @@ public class Utiltis {
     }
 
     //TODO: not implemented yet
-    static public void getNearbyPharmacy(double mLatitude, double mLongitude, Context mContext) {
+    static public void getNearbyPharmacy( Context mContext,double mLatitude, double mLongitude) {
         if (pharmacyList != null) {
             sortList();
         }
@@ -161,7 +166,7 @@ public class Utiltis {
     //TODO: Set which Activity will start from ui
     //get result barcode from camera to Search Activity
     static public void barCodeResult(Context mContext, String code) {
-        Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent = new Intent(mContext, SplashActivity.class);
         intent.putExtra("code", code);
         mContext.startActivity(intent);
     }
@@ -259,7 +264,7 @@ public class Utiltis {
 
     //TODO make aprove by : add in DB FB child named : aprovement , when admin open (his ui) apper to list of requestes (yes mean make this quesry by get all Data from FB)
     //add new medicine by admin or pharmacist
-    static public void addNewMedicine(final long medID, final String name, final Context mContext) {
+    static public void addNewMedicine(final Context mContext,final long medID, final String name ) {
         isMedicineExist(medID, new ReturnValueResult() {
             @Override
             public void onResult(Object object) {
@@ -280,7 +285,7 @@ public class Utiltis {
 
 
     //search medicine by it's name then return it's ID.. return in OnResult interface with it's caller
-    static public void searchMedicineByName(final String medName, final Context mContext, final ReturnValueResult mReturnValueResult) {
+    static public void searchMedicineByName(final Context mContext,final String medName, final ReturnValueResult mReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -305,7 +310,7 @@ public class Utiltis {
 
 
     //add all medicine in list to customer||pharmacist to search||add med
-    static public void getAllMedicineInList(final RecyclerView mRecyclerView, final Context mContext, final MedicineRecycleAdapter.MedicineClickListener medicineClickListener) {
+    static public void getAllMedicineInList( final Context mContext,final RecyclerView mRecyclerView, final MedicineRecycleAdapter.MedicineClickListener medicineClickListener) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -340,8 +345,8 @@ public class Utiltis {
 
 
     //pass location and Pharmacy to open into map
-    static public  void openPharmacyMap(Pharmacy pharmacy,Context mContext){
-        Intent intent=new Intent(mContext, PharmacyMap.class);
+    static public  void openPharmacyMap(Context mContext,Pharmacy pharmacy){
+        Intent intent=new Intent(mContext, PharmacyMapActivity.class);
         intent.putExtra(mContext.getString(R.string.latitude_map),pharmacy.getLatitude());
         intent.putExtra(mContext.getString(R.string.longitude_map),pharmacy.getLongitude());
         intent.putExtra(mContext.getString(R.string.img_map),pharmacy.getImg());
@@ -351,6 +356,33 @@ public class Utiltis {
     }
 
 
+    //show all Pharmacy on map from pressing button in result activity
+    static  public void showAllNearbyPharmacyOnMap(Context mContext, List<Pharmacy> pharmacyList, GoogleMap map){
+        Pharmacy theNearbyPharmacy=pharmacyList.get(0);
+        LatLng theNearbyPharmcyLatLng = new LatLng(theNearbyPharmacy.getLatitude(), theNearbyPharmacy.getLongitude());
+        map.addMarker(new MarkerOptions()
+                        .position(theNearbyPharmcyLatLng)
+                        .title(theNearbyPharmacy.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
+//                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left//visibilty trancparent of markker
+        );
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(theNearbyPharmcyLatLng, 15));
+        for (Pharmacy pharmacy :
+                pharmacyList) {
+            if(pharmacy==theNearbyPharmacy)
+                continue;
+            String name=pharmacy.getName();
+            LatLng pharmacyLatLng = new LatLng(pharmacy.getLatitude(), pharmacy.getLongitude());
+            map.addMarker(new MarkerOptions()
+                            .position(pharmacyLatLng)
+                            .title(name)
+//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
+//                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left//visibilty trancparent of markker
+            );
+        }
+
+    }
 
 
     //this interface act between function and caller to get a return value form background thread

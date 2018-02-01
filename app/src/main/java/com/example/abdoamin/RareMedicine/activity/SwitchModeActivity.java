@@ -18,13 +18,13 @@ import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 
-public class ModeSwitch extends AppCompatActivity
+public class SwitchModeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mode_switch);
+        setContentView(R.layout.activity_switch_mode);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -50,10 +50,10 @@ public class ModeSwitch extends AppCompatActivity
         Utiltis.isMedicineExist(100, new Utiltis.ReturnValueResult() {
             @Override
             public void onResult(Object object) {
-                Toast.makeText(ModeSwitch.this, "done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SwitchModeActivity.this, "done", Toast.LENGTH_SHORT).show();
             }
         });
-        Utiltis.openPharmacyMap(new Pharmacy("abdo",30.618,32.291,2,"22-shar3 ibrahem el abyad","img","01221263660"),this);
+        Utiltis.openPharmacyMap(this,new Pharmacy("abdo",30.618,32.291,2,"22-shar3 ibrahem el abyad","img","01221263660"));
     }
 
     @Override

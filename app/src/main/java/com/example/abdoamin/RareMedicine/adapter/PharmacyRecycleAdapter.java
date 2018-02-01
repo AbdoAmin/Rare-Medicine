@@ -32,7 +32,7 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mContext).inflate(/*TODO change layout*/R.layout.activity_main, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(/*TODO change layout*/R.layout.activity_splash, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }

@@ -32,7 +32,7 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mContext).inflate(/*TODO change layout*/R.layout.activity_main, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(/*TODO change layout*/R.layout.activity_splash, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
