@@ -47,7 +47,7 @@ public class SwitchModeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         drawer.openDrawer(GravityCompat.START);
 
-        Utiltis.isMedicineExist(100, new Utiltis.ReturnValueResult() {
+        Utiltis.isMedicineExist("100", new Utiltis.ReturnValueResult() {
             @Override
             public void onResult(Object object) {
                 Toast.makeText(SwitchModeActivity.this, "done", Toast.LENGTH_SHORT).show();

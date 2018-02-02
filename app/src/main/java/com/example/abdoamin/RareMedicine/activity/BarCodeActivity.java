@@ -1,5 +1,6 @@
 package com.example.abdoamin.RareMedicine.activity;
 
+import android.content.res.TypedArray;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,11 +14,13 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 import java.util.List;
 
+import butterknife.OnClick;
 import info.androidhive.barcode.BarcodeReader;
 
 public class BarCodeActivity extends AppCompatActivity implements BarcodeReader.BarcodeReaderListener {
 
     BarcodeReader barcodeReader;
+    String activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class BarCodeActivity extends AppCompatActivity implements BarcodeReader.
         setContentView(R.layout.activity_bar_code);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        activity=getIntent().getStringExtra(getString(R.string.activity_name));
 
         // get the barcode reader instance
         barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_scanner);
@@ -39,7 +43,7 @@ public class BarCodeActivity extends AppCompatActivity implements BarcodeReader.
 
         // ticket details activity by passing barcode
         Log.e("^_^", barcode.displayValue);
-        Utiltis.barCodeResult(this, barcode.displayValue);
+        Utiltis.barCodeResult(this, barcode.displayValue,activity);
     }
 
     @Override

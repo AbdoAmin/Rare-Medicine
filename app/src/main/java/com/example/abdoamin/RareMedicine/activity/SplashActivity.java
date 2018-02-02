@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
         Utiltis.getCurrentUserLocation(this);
 //        Toast.makeText(this, String.valueOf(Utiltis.userLat) + " , " + String.valueOf(Utiltis.userLng), Toast.LENGTH_LONG).show();
 //        Utiltis.searchMedicine(100,this);
-//        Toast.makeText(this, Utiltis.pharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, Utiltis.nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
 //        Utiltis.barCode(SplashActivity.this);
 //
 //        Utiltis.searchMedicineByName("revo",this, new Utiltis.ReturnValueResult() {
@@ -38,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
 //        });
 
 
-        startActivity(new Intent(this,SwitchModeActivity.class));
+        startActivity(new Intent(this,CustomerSearchActivity.class));
 
 
     }

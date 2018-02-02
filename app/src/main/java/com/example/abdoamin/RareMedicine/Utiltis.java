@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
-import com.example.abdoamin.RareMedicine.activity.SplashActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
@@ -40,7 +39,8 @@ public class Utiltis {
     //user Longitude
     public static double userLng;
     //nearby PH list Founded
-    public static List<Pharmacy> pharmacyList;
+    public static List<Pharmacy> nearbyPharmacyList;
+    public static List<Medicine> searchedMedicineList;
 
 
     /*
@@ -50,7 +50,7 @@ public class Utiltis {
      * if though record in list
      * */
     //context mean where this function output appear//TODO show list into ui
-    static public void searchMedicine( final Context mContext,final long medID) {
+    static public void searchMedicine(final Context mContext, final String medID) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -59,13 +59,13 @@ public class Utiltis {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //inital list
-                pharmacyList = new ArrayList<Pharmacy>();
+                nearbyPharmacyList = new ArrayList<Pharmacy>();
                 //search each PH if medicine found
                 for (final DataSnapshot mChild : dataSnapshot.getChildren()) {
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("/pharmacy/" + mChild.getKey() + "/medicine");
-                    myRef.orderByKey().equalTo(String.valueOf(medID)).addListenerForSingleValueEvent(new ValueEventListener() {
+                    myRef.orderByKey().equalTo(medID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //check if found
@@ -82,8 +82,8 @@ public class Utiltis {
                                     String phone = (String) mChild.child("phone").getValue();
 
                                     //add in list
-                                    pharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
-                                    Toast.makeText(mContext, pharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+                                    nearbyPharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
+                                    Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
 
                                 }
 
@@ -108,8 +108,8 @@ public class Utiltis {
     }
 
     //TODO: not implemented yet
-    static public void getNearbyPharmacy( Context mContext,double mLatitude, double mLongitude) {
-        if (pharmacyList != null) {
+    static public void getNearbyPharmacy(Context mContext, double mLatitude, double mLongitude) {
+        if (nearbyPharmacyList != null) {
             sortList();
         }
 
@@ -117,7 +117,7 @@ public class Utiltis {
 
 
     static private void sortList() {
-        Collections.sort(pharmacyList, new Comparator<Pharmacy>() {
+        Collections.sort(nearbyPharmacyList, new Comparator<Pharmacy>() {
             @Override
             public int compare(Pharmacy pharmacy1, Pharmacy pharmacy2) {
                 return Double.compare(pharmacy1.getDistance(), pharmacy2.getDistance());
@@ -159,67 +159,33 @@ public class Utiltis {
     //open Activity code bar detected with camera
     static public void barCode(Context mContext) {
         Intent intent = new Intent(mContext, BarCodeActivity.class);
+        intent.putExtra(mContext.getString(R.string.activity_name), mContext.getClass().getSimpleName());
         mContext.startActivity(intent);
     }
 
 
     //TODO: Set which Activity will start from ui
     //get result barcode from camera to Search Activity
-    static public void barCodeResult(Context mContext, String code) {
-        Intent intent = new Intent(mContext, SplashActivity.class);
-        intent.putExtra("code", code);
-        mContext.startActivity(intent);
-    }
+    static public void barCodeResult(Context mContext, String code, String activity) {
+        Intent intent = null;
+        try {
+            intent = new Intent(mContext, Class.forName("com.example.abdoamin.RareMedicine.activity." + activity));
+            intent.putExtra("code", code);
+            mContext.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-
-    //TODO: put into ui , get medicine info ,, 2 view customer,PH
-    static public void getPharmacyProfileInfo(long pharmacyID) {
-        FirebaseDatabase mFirebaseDatabase;
-        DatabaseReference mDatabaseReference;
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + String.valueOf(pharmacyID));
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<Medicine> mMedicineList = new ArrayList<>();
-                String name = (String) dataSnapshot.child("name").getValue();
-                String address = (String) dataSnapshot.child("address").getValue();
-                String imgURL = (String) dataSnapshot.child("img").getValue();
-                String phoneNumber = (String) dataSnapshot.child("phone").getValue();
-                double lat = (double) dataSnapshot.child("latitude").getValue();
-                double lng = (double) dataSnapshot.child("longitude").getValue();
-                final List<Long> medicine = new ArrayList<Long>(((HashMap<Long, String>) dataSnapshot.child("medicine").getValue()).keySet());
-                for (final Long medID : medicine) {
-                    getMedicineInfo(medID, new ReturnValueResult() {
-                        @Override
-                        public void onResult(Object med) {
-
-                            mMedicineList.add((Medicine) med);
-                            if (medicine.get(medicine.size() - 1) == medID) {
-                                //TODO: output into ui
-                            }
-                        }
-                    });
-
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-//                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
 
     //get each medicine info from firebase by its id
-    static public void getMedicineInfo(final Long medID, final ReturnValueResult mReturnValueResult) {
+    static public void getMedicineInfo(final String medID, final ReturnValueResult mReturnValueResult) {
 
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference("medicine/" + String.valueOf(medID));
+        mDatabaseReference = mFirebaseDatabase.getReference("medicine/" + medID);
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -238,12 +204,12 @@ public class Utiltis {
 
 
     //check if medicine exist
-    static public void isMedicineExist(long medID, final ReturnValueResult mReturnValueResult) {
+    static public void isMedicineExist(String medID, final ReturnValueResult mReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
-        mDatabaseReference.orderByKey().equalTo(String.valueOf(medID)).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.orderByKey().equalTo(medID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
@@ -264,16 +230,19 @@ public class Utiltis {
 
     //TODO make aprove by : add in DB FB child named : aprovement , when admin open (his ui) apper to list of requestes (yes mean make this quesry by get all Data from FB)
     //add new medicine by admin or pharmacist
-    static public void addNewMedicine(final Context mContext,final long medID, final String name ) {
+    static public void addNewMedicine(final Context mContext, final String medID, final String name) {
         isMedicineExist(medID, new ReturnValueResult() {
             @Override
             public void onResult(Object object) {
                 if (!((Boolean) object)) {
+                    final HashMap<String, String> nameKey = new HashMap<String, String>() {{
+                        put("name", name);
+                    }};
                     FirebaseDatabase mFirebaseDatabase;
                     DatabaseReference mDatabaseReference;
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
                     mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
-                    mDatabaseReference.child(String.valueOf(medID)).setValue("name", name);
+                    mDatabaseReference.child(medID).setValue(nameKey);
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.med_exist), Toast.LENGTH_LONG).show();
                 }
@@ -285,7 +254,7 @@ public class Utiltis {
 
 
     //search medicine by it's name then return it's ID.. return in OnResult interface with it's caller
-    static public void searchMedicineByName(final Context mContext,final String medName, final ReturnValueResult mReturnValueResult) {
+    static public void searchMedicineByName(final Context mContext, final String medName, final ReturnValueResult mReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -310,7 +279,7 @@ public class Utiltis {
 
 
     //add all medicine in list to customer||pharmacist to search||add med
-    static public void getAllMedicineInList( final Context mContext,final RecyclerView mRecyclerView, final MedicineRecycleAdapter.MedicineClickListener medicineClickListener) {
+    static public void getAllMedicineInList(final Context mContext, final RecyclerView mRecyclerView, final MedicineRecycleAdapter mMedicineRecycleAdapter) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -321,14 +290,16 @@ public class Utiltis {
                 //check if found
                 if (dataSnapshot.getValue() != null) {
                     //creat list of medicine that will pass to recycleView Adpter
-                    List<Medicine> medicineList = new ArrayList<Medicine>();
+                    searchedMedicineList = new ArrayList<Medicine>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
-                        Medicine medicine = new Medicine((String) child.child("name").getValue(), Long.valueOf(child.getKey()));
-                        medicineList.add(medicine);
+                        Medicine medicine = new Medicine((String) child.child("name").getValue(), child.getKey());
+                        searchedMedicineList.add(medicine);
                     }
                     //TODO call into PH add, customer search
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-                    mRecyclerView.setAdapter(new MedicineRecycleAdapter(medicineList, mContext, medicineClickListener));
+                    mMedicineRecycleAdapter.addList(searchedMedicineList);
+                    mRecyclerView.setAdapter(mMedicineRecycleAdapter);
+
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.no_med_in_firebase), Toast.LENGTH_LONG).show();
                 }
@@ -343,22 +314,62 @@ public class Utiltis {
     }
 
 
+    //TODO: put into ui , get medicine info ,, 2 view customer,PH
+    static public void getPharmacyProfileInfo(String pharmacyID) {
+        FirebaseDatabase mFirebaseDatabase;
+        DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID);
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final List<Medicine> mMedicineList = new ArrayList<>();
+                String name = (String) dataSnapshot.child("name").getValue();
+                String address = (String) dataSnapshot.child("address").getValue();
+                String imgURL = (String) dataSnapshot.child("img").getValue();
+                String phoneNumber = (String) dataSnapshot.child("phone").getValue();
+                double lat = (double) dataSnapshot.child("latitude").getValue();
+                double lng = (double) dataSnapshot.child("longitude").getValue();
+                final List<String> medicine = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.child("medicine").getValue()).keySet());
+                for (final String medID : medicine) {
+                    getMedicineInfo(medID, new ReturnValueResult() {
+                        @Override
+                        public void onResult(Object med) {
+
+                            mMedicineList.add((Medicine) med);
+                            if (medicine.get(medicine.size() - 1) == medID) {
+                                //TODO: output into ui
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+//                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     //pass location and Pharmacy to open into map
-    static public  void openPharmacyMap(Context mContext,Pharmacy pharmacy){
-        Intent intent=new Intent(mContext, PharmacyMapActivity.class);
-        intent.putExtra(mContext.getString(R.string.latitude_map),pharmacy.getLatitude());
-        intent.putExtra(mContext.getString(R.string.longitude_map),pharmacy.getLongitude());
-        intent.putExtra(mContext.getString(R.string.img_map),pharmacy.getImg());
-        intent.putExtra(mContext.getString(R.string.name_map),pharmacy.getName());
+    static public void openPharmacyMap(Context mContext, Pharmacy pharmacy) {
+        Intent intent = new Intent(mContext, PharmacyMapActivity.class);
+        intent.putExtra(mContext.getString(R.string.latitude_map), pharmacy.getLatitude());
+        intent.putExtra(mContext.getString(R.string.longitude_map), pharmacy.getLongitude());
+        intent.putExtra(mContext.getString(R.string.img_map), pharmacy.getImg());
+        intent.putExtra(mContext.getString(R.string.name_map), pharmacy.getName());
         mContext.startActivity(intent);
 
     }
 
 
     //show all Pharmacy on map from pressing button in result activity
-    static  public void showAllNearbyPharmacyOnMap(Context mContext, List<Pharmacy> pharmacyList, GoogleMap map){
-        Pharmacy theNearbyPharmacy=pharmacyList.get(0);
+    static public void showAllNearbyPharmacyOnMap(Context mContext, List<Pharmacy> pharmacyList, GoogleMap map) {
+        Pharmacy theNearbyPharmacy = pharmacyList.get(0);
         LatLng theNearbyPharmcyLatLng = new LatLng(theNearbyPharmacy.getLatitude(), theNearbyPharmacy.getLongitude());
         map.addMarker(new MarkerOptions()
                         .position(theNearbyPharmcyLatLng)
@@ -370,9 +381,9 @@ public class Utiltis {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(theNearbyPharmcyLatLng, 15));
         for (Pharmacy pharmacy :
                 pharmacyList) {
-            if(pharmacy==theNearbyPharmacy)
+            if (pharmacy == theNearbyPharmacy)
                 continue;
-            String name=pharmacy.getName();
+            String name = pharmacy.getName();
             LatLng pharmacyLatLng = new LatLng(pharmacy.getLatitude(), pharmacy.getLongitude());
             map.addMarker(new MarkerOptions()
                             .position(pharmacyLatLng)

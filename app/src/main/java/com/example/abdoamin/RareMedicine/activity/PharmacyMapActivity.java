@@ -66,7 +66,7 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 ////                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
 //        );
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmcyLatLng, 15));
-        Utiltis.showAllNearbyPharmacyOnMap(this,Utiltis.pharmacyList,mMap);
+        Utiltis.showAllNearbyPharmacyOnMap(this,Utiltis.nearbyPharmacyList,mMap);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {

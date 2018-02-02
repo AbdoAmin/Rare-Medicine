@@ -6,11 +6,18 @@ package com.example.abdoamin.RareMedicine.object;
 
 public class Medicine {
     private String name;
-    private Long medID;
+    private String medID;
 
-    public Medicine(String name, Long medID) {
+    public Medicine(String name, String medID) {
         this.name = name;
         this.medID = medID;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getMedID() {
+        return medID;
+    }
 }

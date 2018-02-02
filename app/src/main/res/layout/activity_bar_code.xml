@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context="com.example.abdoamin.RareMedicine.activity.BarCodeActivity">
-
-<fragment
-    android:id="@+id/barcode_scanner"
-    android:name="info.androidhive.barcode.BarcodeReader"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:auto_focus="true"
-    app:use_flash="false" />
+    tools:context="com.example.abdoamin.RareMedicine.activity.BarCodeActivity">
 
-<info.androidhive.barcode.ScannerOverlay
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#44000000"
-    app:line_color="#7323DC"
-    app:line_speed="6"
-    app:line_width="4"
-    app:square_height="200"
-    app:square_width="200" />
+    <!--<ImageButton-->
+        <!--android:id="@+id/barcode_flash_btn"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:src="@drawable/flash"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-</RelativeLayout>
+    <fragment
+        android:id="@+id/barcode_scanner"
+        android:name="info.androidhive.barcode.BarcodeReader"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:auto_focus="true"
+        app:use_flash="false" />
+
+    <info.androidhive.barcode.ScannerOverlay
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#44000000"
+        app:line_color="#7323DC"
+        app:line_speed="6"
+        app:line_width="4"
+        app:square_height="200"
+        app:square_width="200" />
+
+</android.support.constraint.ConstraintLayout>

@@ -18,5 +18,6 @@
     <string name="password_login">Password</string>
     <string name="login">log in</string>
     <string name="signup_open_activity">sign up</string>
+    <string name="activity_name" translatable="false">activity</string>
 
 </resources>
