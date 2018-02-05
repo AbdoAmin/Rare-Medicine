@@ -1,13 +1,16 @@
 package com.example.abdoamin.RareMedicine;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
+import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
@@ -16,6 +19,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -394,6 +401,37 @@ public class Utiltis {
         }
 
     }
+
+    static public void pharmacySignUp(final Context mContext, final String email, String password, final String name, final double latitude, final double longitude) {
+        FirebaseAuth mAuth= FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(mContext, email,Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("/pharmacy/" + task.getResult().getUser().getUid().toString());
+                    myRef.setValue(new HashMap<String, Object>() {
+                        {
+                            put("name", name);
+                            put("location", new HashMap<String, Double>() {
+                                {
+                                    put("latitude", latitude);
+                                    put("longitude", longitude);
+                                }
+                            });
+                        }
+                    });
+                    mContext.startActivity(new Intent(mContext, SignUpContinueActivity.class));
+                    ((Activity)mContext).finish();
+                } else {
+                    Toast.makeText(mContext, "This Email Already Exist.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
 
 
     //this interface act between function and caller to get a return value form background thread

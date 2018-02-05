@@ -3,12 +3,16 @@ package com.example.abdoamin.RareMedicine.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
+import com.example.abdoamin.RareMedicine.object.Pharmacy;
+
+import java.util.ArrayList;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -38,7 +42,26 @@ public class SplashActivity extends AppCompatActivity {
 //        });
 
 
-        startActivity(new Intent(this,CustomerSearchActivity.class));
+        Utiltis.nearbyPharmacyList=new ArrayList<>();
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("El_Plascy Pharmacy",30.619,32.293,50));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.618,32.295,60));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.617,32.299,70));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.616,32.290,60));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.620,32.290,60));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.614,32.287,70));
+//        startActivity(new Intent(this,PharmacyMapActivity.class));
+        new CountDownTimer(2000, 1000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+            @Override
+            public void onFinish() {
+                startActivity(new Intent(SplashActivity.this,SignUpActivity.class));
+            }
+
+        }.start();
 
 
     }

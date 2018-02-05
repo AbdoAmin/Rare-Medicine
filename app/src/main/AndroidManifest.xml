@@ -42,7 +42,8 @@
         <activity android:name=".activity.CustomerSearchActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.AddNewMedicineActivity" />
-        <activity android:name=".activity.PharmacyAddMedicineActivity"></activity>
+        <activity android:name=".activity.PharmacyAddMedicineActivity" />
+        <activity android:name=".activity.SignUpContinueActivity"></activity>
     </application>
 
 </manifest>

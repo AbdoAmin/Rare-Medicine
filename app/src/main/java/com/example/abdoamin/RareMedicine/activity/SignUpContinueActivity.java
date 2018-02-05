@@ -5,11 +5,11 @@ import android.os.Bundle;
 
 import com.example.abdoamin.RareMedicine.R;
 
-public class PharmacyProfileUserActivity extends AppCompatActivity {
+public class SignUpContinueActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pharmacy_profile_user);
+        setContentView(R.layout.activity_sign_up_continue);
     }
 }
