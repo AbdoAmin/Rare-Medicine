@@ -3,14 +3,19 @@ package com.example.abdoamin.RareMedicine;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
+import com.example.abdoamin.RareMedicine.activity.LogInActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
+import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
+import com.example.abdoamin.RareMedicine.activity.SplashActivity;
+import com.example.abdoamin.RareMedicine.activity.SwitchModeActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
@@ -20,6 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +35,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -403,12 +414,12 @@ public class Utiltis {
     }
 
     static public void pharmacySignUp(final Context mContext, final String email, String password, final String name, final double latitude, final double longitude) {
-        FirebaseAuth mAuth= FirebaseAuth.getInstance();
-        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(mContext, email,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, email, Toast.LENGTH_SHORT).show();
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference("/pharmacy/" + task.getResult().getUser().getUid().toString());
                     myRef.setValue(new HashMap<String, Object>() {
@@ -422,17 +433,62 @@ public class Utiltis {
                             });
                         }
                     });
-                    mContext.startActivity(new Intent(mContext, SignUpContinueActivity.class));
-                    ((Activity)mContext).finish();
+                    Intent intent = new Intent(mContext, SignUpContinueActivity.class);
+                    intent.putExtra(mContext.getString(R.string.Pharmacy_id), task.getResult().getUser().getUid().toString());
+                    mContext.startActivity(intent);
+                    ((Activity) mContext).finish();
                 } else {
-                    Toast.makeText(mContext, "This Email Already Exist.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "This Email Already Exist.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
+    static public void pharmacySignUpContinue(final Context mContext, final String userID, final Uri imageURI, final String address, final String phone) {
+        final ReturnValueResult returnValueResult = new ReturnValueResult() {
+            @Override
+            public void onResult(final Object downloadUrl) {
 
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("/pharmacy/" + userID);
+                myRef.updateChildren(new HashMap<String, Object>() {
+                    {
+                        if (address != null)
+                            put("address", address);
+                        if ((Uri) downloadUrl == null || imageURI == null)
+                            put("img", "gs://pharmacien-e9a90.appspot.com/pharmacyProfile/defult.png");
+                        else
+                            put("imag", ((Uri) downloadUrl).toString());
+                        if (phone != null)
+                            put("phone", phone);
+
+                    }
+                });
+            }
+        };
+        final Uri[] downloadUrl = new Uri[1];
+        if (imageURI != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+//            Uri file = Uri.fromFile(new File(imageURI));
+            StorageReference storageRef = storage.getReference("/pharmacyProfile/" + userID);
+            storageRef.putFile(imageURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                    downloadUrl[0] = taskSnapshot.getDownloadUrl();
+                    returnValueResult.onResult((Uri) downloadUrl[0]);
+                }
+            });
+        }
+        else {
+            returnValueResult.onResult(null);
+        }
+        Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
+        intent.putExtra(mContext.getString(R.string.Pharmacy_id), userID);
+        mContext.startActivity(intent);
+        ((Activity) mContext).finish();
+    }
 
     //this interface act between function and caller to get a return value form background thread
     public interface ReturnValueResult {

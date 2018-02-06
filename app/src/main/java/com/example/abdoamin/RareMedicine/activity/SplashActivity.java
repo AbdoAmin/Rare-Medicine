@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.620,32.290,60));
         Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.614,32.287,70));
 //        startActivity(new Intent(this,PharmacyMapActivity.class));
-        new CountDownTimer(2000, 1000) {
+        new CountDownTimer(1000, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -59,6 +59,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 startActivity(new Intent(SplashActivity.this,SignUpActivity.class));
+                finish();
             }
 
         }.start();

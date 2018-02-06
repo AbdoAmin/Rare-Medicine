@@ -20,5 +20,6 @@
     <string name="signup_open_activity">sign up</string>
     <string name="activity_name" translatable="false">activity</string>
     <string name="splash_screen">Splash screen</string>
+    <string name="Pharmacy_id" translatable="false">userID</string>
 
 </resources>
