@@ -1,19 +1,46 @@
 package com.example.abdoamin.RareMedicine.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
+import com.example.abdoamin.RareMedicine.adapter.PharmacyRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class SearchMedicineResultActivity extends AppCompatActivity {
+    @BindView(R.id.customer_search_medicine_list_recycleView)RecyclerView mPharmacyRecycleView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_medicine_result);
+        ButterKnife.bind(this);
+        PharmacyRecycleAdapter mPharmacyRecycleAdapter=new PharmacyRecycleAdapter(Utiltis.nearbyPharmacyList, this, new PharmacyRecycleAdapter.PharmacyClickListener() {
+            @Override
+            public void onPharmacyClick(int position) {
+                Intent intent=new Intent(SearchMedicineResultActivity.this,PharmacyProfileUserActivity.class);
+                intent.putExtra(getString(R.string.pharmacy_position),position);
+                startActivity(intent);
+            }
+        });
+        mPharmacyRecycleView.setLayoutManager(new LinearLayoutManager(this));
+        mPharmacyRecycleView.setAdapter(mPharmacyRecycleAdapter);
+
+
+    }
+    @OnClick(R.id.searsh_medicine_result_open_map)
+    void onMapBtnClick(){
+        startActivity(new Intent(this,PharmacyMapActivity.class));
     }
 }

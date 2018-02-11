@@ -7,14 +7,13 @@ import java.util.List;
  */
 
 public class Pharmacy {
-
     private String name;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
-    private double distance;
+    private Double distance;
 
     private String address;
 
@@ -22,16 +21,16 @@ public class Pharmacy {
 
     private String phone;
 
-    private List<Long> medicine;
+    private List<Medicine> medicine;
 
-    public Pharmacy(String name, double latitude, double longitude, double distance) {
+    public Pharmacy(String name, Double latitude, Double longitude, Double distance) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.distance = distance;
         this.name = name;
     }
 
-    public Pharmacy(String name, double latitude, double longitude, double distance, String address, String img, String phone) {
+    public Pharmacy(String name, Double latitude, Double longitude, Double distance, String address, String img, String phone) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -41,7 +40,8 @@ public class Pharmacy {
         this.phone = phone;
     }
 
-    public Pharmacy(String name, double latitude, double longitude, double distance, String address, String imgURL, String phoneNumber, List<Long> medicine) {
+    public Pharmacy(String name, Double latitude, Double longitude, Double distance, String address, String imgURL, String phoneNumber, List<Medicine> medicine) {
+
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -56,15 +56,15 @@ public class Pharmacy {
         return name;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public double getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
@@ -80,11 +80,12 @@ public class Pharmacy {
         return phone;
     }
 
-    public List<Long> getMedicine() {
+    public List<Medicine> getMedicine() {
         return medicine;
     }
 
-    public void setUrlPath(String email) {
-        img = "gs://pharmacien-e9a90.appspot.com/pharmacyProfile/" + email + ".jpg";
+    public void setMedicine(List<Medicine> medicineList){
+        medicine=medicineList;
     }
+
 }

@@ -11,39 +11,40 @@
         layout="@layout/profile_main" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/medicine_recycleView"
-        android:layout_width="368dp"
-        android:layout_height="219dp"
+        android:id="@+id/pharmacy_profile_medicine_recycleView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/pharmacy_profile_medicine_modify_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include1" />
 
     <Button
-        android:id="@+id/add_medicine_btn"
-        android:layout_width="150dp"
+        android:id="@+id/pharmacy_profile_medicine_modify_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/medicine_recycleView"
-        app:layout_constraintTop_toBottomOf="@+id/medicine_recycleView"
-        android:layout_marginRight="8dp" />
-    <Button
-        android:id="@+id/delete_medicine_btn"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:text="modify medicine"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/medicine_recycleView"
-        app:layout_constraintTop_toBottomOf="@+id/medicine_recycleView"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+    <!--<Button-->
+        <!--android:id="@+id/delete_medicine_btn"-->
+        <!--android:layout_width="150dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Add"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/medicine_recycleView"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/medicine_recycleView"-->
+        <!--android:layout_marginLeft="8dp" />-->
 
 </android.support.constraint.ConstraintLayout>

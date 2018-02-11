@@ -46,14 +46,6 @@ public class SwitchModeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         drawer.openDrawer(GravityCompat.START);
-
-        Utiltis.isMedicineExist("100", new Utiltis.ReturnValueResult() {
-            @Override
-            public void onResult(Object object) {
-                Toast.makeText(SwitchModeActivity.this, "done", Toast.LENGTH_SHORT).show();
-            }
-        });
-        Utiltis.openPharmacyMap(this,new Pharmacy("abdo",30.618,32.291,2,"22-shar3 ibrahem el abyad","img","01221263660"));
     }
 
     @Override

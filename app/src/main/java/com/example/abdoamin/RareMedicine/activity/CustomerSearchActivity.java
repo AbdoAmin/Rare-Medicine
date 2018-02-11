@@ -1,5 +1,6 @@
 package com.example.abdoamin.RareMedicine.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +12,10 @@ import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
+import com.example.abdoamin.RareMedicine.object.Pharmacy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,15 +44,20 @@ public class CustomerSearchActivity extends AppCompatActivity {
         if (barCodeResult != null) {
             searchMedicineByID(barCodeResult);
         }
-        if(Utiltis.searchedMedicineList ==null)
-            Utiltis.searchedMedicineList =new ArrayList<>();
-        mMedicineRecycleAdapter = new MedicineRecycleAdapter(this, Utiltis.searchedMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
+        if(Utiltis.allSystemMedicineList ==null)
+            Utiltis.allSystemMedicineList =new ArrayList<>();
+        mMedicineRecycleAdapter = new MedicineRecycleAdapter(this, Utiltis.allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
             @Override
             public void onMedicineClick(Medicine medicine) {
                 searchMedicineByID(medicine.getMedID());
             }
         });
-        Utiltis.getAllMedicineInList(this, mRecyclerView, mMedicineRecycleAdapter);
+        Utiltis.getAllMedicineInList(this, mRecyclerView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
+            @Override
+            public void onResult(List<Medicine> object) {
+
+            }
+        });
 
 
     }
@@ -57,13 +65,13 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @OnTextChanged(R.id.customer_search_search_editText)
     void textChange() {
         medicineArrayList.clear();
-        for (Medicine medicine : Utiltis.searchedMedicineList) {
+        for (Medicine medicine : Utiltis.allSystemMedicineList) {
             if (medicine.getName().contains(searchEditText.getText().toString())||
                     medicine.getMedID().contains(searchEditText.getText().toString()))
                 medicineArrayList.add(medicine);
         }
         if (searchEditText.getText().toString().trim() == null)
-            mMedicineRecycleAdapter.addList(Utiltis.searchedMedicineList);
+            mMedicineRecycleAdapter.addList(Utiltis.allSystemMedicineList);
         else
             mMedicineRecycleAdapter.addList(medicineArrayList);
     }
@@ -73,13 +81,18 @@ public class CustomerSearchActivity extends AppCompatActivity {
         Utiltis.barCode(this);
     }
 
-    @OnClick(R.id.customer_search_search_btn)
-    void OnSearchBtnClick() {
-        searchEditText.getText().toString();
-    }
+//    @OnClick(R.id.customer_search_search_btn)
+//    void OnSearchBtnClick() {
+//        searchEditText.getText().toString();
+//    }
 
     void searchMedicineByID(String medicineId) {
-        Utiltis.searchMedicine(this, medicineId);
+        Utiltis.searchMedicine(this, medicineId, new Utiltis.ReturnValueResult<List<Pharmacy>>() {
+            @Override
+            public void onResult(List<Pharmacy> pharmacyList) {
+                startActivity(new Intent(CustomerSearchActivity.this,SearchMedicineResultActivity.class));
+            }
+        });
         //TODO complete searchMedicine function
     }
 

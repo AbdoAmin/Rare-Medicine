@@ -20,17 +20,17 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     private GoogleMap mMap;
-    private double latitude;
-    private double longitude;
-    private String img;
-    private String name;
+//    private double latitude;
+//    private double longitude;
+//    private String img;
+//    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pharmacy_map);
 
-        setVariable();
+//        setVariable();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -80,14 +80,14 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 
     }
 
-    private void setVariable() {
-        Intent intent = getIntent();
-        latitude = intent.getDoubleExtra(getString(R.string.latitude_map), 0);
-        longitude = intent.getDoubleExtra(getString(R.string.longitude_map), 0);
-        img = intent.getStringExtra(getString(R.string.img_map));
-        name = intent.getStringExtra(getString(R.string.name_map));
-
-    }
+//    private void setVariable() {
+//        Intent intent = getIntent();
+//        latitude = intent.getDoubleExtra(getString(R.string.latitude_map), 0);
+//        longitude = intent.getDoubleExtra(getString(R.string.longitude_map), 0);
+//        img = intent.getStringExtra(getString(R.string.img_map));
+//        name = intent.getStringExtra(getString(R.string.name_map));
+//
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

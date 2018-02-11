@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Rare Medicine</string>
     <string name="med_exist">This medicine is already exist</string>
+    <string name="med_not_exist">This medicine isn\'t exist in our system</string>
     <string name="error_search">Faild To search</string>
     <string name="no_med_in_firebase">No Medicine Available now</string>
     <string name="title_activity_mode_switch">ModeSwitch</string>
@@ -20,6 +21,7 @@
     <string name="signup_open_activity">sign up</string>
     <string name="activity_name" translatable="false">activity</string>
     <string name="splash_screen">Splash screen</string>
-    <string name="Pharmacy_id" translatable="false">userID</string>
+    <string name="pharmacy_id" translatable="false">pharmacyID</string>
+    <string name="pharmacy_position" translatable="false">position</string>
 
 </resources>

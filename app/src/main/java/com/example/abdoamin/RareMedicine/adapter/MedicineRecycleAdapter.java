@@ -66,8 +66,11 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.adapter_medicine_item_medicine_name)TextView medicineName;
-        @BindView(R.id.adapter_medicine_item_medicine_id)TextView medicineId;
+        @BindView(R.id.adapter_medicine_item_medicine_name)
+        TextView medicineName;
+        @BindView(R.id.adapter_medicine_item_medicine_id)
+        TextView medicineId;
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

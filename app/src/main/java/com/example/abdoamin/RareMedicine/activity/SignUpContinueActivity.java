@@ -44,7 +44,7 @@ public class SignUpContinueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_continue);
         ButterKnife.bind(this);
-        userID=getIntent().getStringExtra(getString(R.string.Pharmacy_id));
+        userID=getIntent().getStringExtra(getString(R.string.pharmacy_id));
     }
 
     @OnClick(R.id.sign_up_continue_imag_btn)

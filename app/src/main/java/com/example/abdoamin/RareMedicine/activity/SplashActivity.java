@@ -11,6 +11,7 @@ import android.os.Bundle;
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -41,14 +42,13 @@ public class SplashActivity extends AppCompatActivity {
 //            }
 //        });
 
-
         Utiltis.nearbyPharmacyList=new ArrayList<>();
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("El_Plascy Pharmacy",30.619,32.293,50));
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.618,32.295,60));
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.617,32.299,70));
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.616,32.290,60));
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.620,32.290,60));
-        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.614,32.287,70));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("El_Plascy Pharmacy",30.619,32.293,50.0));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.618,32.295,60.0));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.617,32.299,70.0));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.616,32.290,60.0));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Agzahana Pharmacy",30.620,32.290,60.0));
+        Utiltis.nearbyPharmacyList.add(new Pharmacy("Mostafa El- Amir Pharmacy",30.614,32.287,70.0));
 //        startActivity(new Intent(this,PharmacyMapActivity.class));
         new CountDownTimer(1000, 1000) {
 
@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
             }
             @Override
             public void onFinish() {
-                startActivity(new Intent(SplashActivity.this,SignUpActivity.class));
+                startActivity(new Intent(SplashActivity.this,LogInActivity.class));
                 finish();
             }
 
@@ -87,5 +87,11 @@ public class SplashActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    void initializePharmacyUserAutoLogIn(){
+//        Utiltis.mAuth= FirebaseAuth.getInstance();
+//        Utiltis.mAuth.signInWithEmailAndPassword()
+                //Todo get prefrance email and pass
     }
 }

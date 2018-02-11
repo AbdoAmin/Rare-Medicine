@@ -10,12 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
-import com.example.abdoamin.RareMedicine.activity.LogInActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
-import com.example.abdoamin.RareMedicine.activity.SplashActivity;
-import com.example.abdoamin.RareMedicine.activity.SwitchModeActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
@@ -30,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +37,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -58,8 +55,16 @@ public class Utiltis {
     public static double userLng;
     //nearby PH list Founded
     public static List<Pharmacy> nearbyPharmacyList;
-    public static List<Medicine> searchedMedicineList;
-
+    //all medicine list at system
+    public static List<Medicine> allSystemMedicineList;
+    //all pharmacy medicine exist
+    public static List<Medicine> mMedicineList;
+    //current profile data author pharmacy
+    public static Pharmacy currentPharmacy;
+    //for author pharmacy
+    public static FirebaseAuth mAuth;
+    public static FirebaseUser currentUser;
+    static Double targetDistance;
 
     /*
      * this Algorithm
@@ -68,65 +73,84 @@ public class Utiltis {
      * if though record in list
      * */
     //context mean where this function output appear//TODO show list into ui
-    static public void searchMedicine(final Context mContext, final String medID) {
-        FirebaseDatabase mFirebaseDatabase;
-        DatabaseReference mDatabaseReference;
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference().child("pharmacy");
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+    static public void searchMedicine(final Context mContext, final String medID, final ReturnValueResult<List<Pharmacy>> listReturnValueResult) {
+        isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //inital list
-                nearbyPharmacyList = new ArrayList<Pharmacy>();
-                //search each PH if medicine found
-                for (final DataSnapshot mChild : dataSnapshot.getChildren()) {
-
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("/pharmacy/" + mChild.getKey() + "/medicine");
-                    myRef.orderByKey().equalTo(medID).addListenerForSingleValueEvent(new ValueEventListener() {
+            public void onResult(Boolean exist) {
+                if (exist) {
+                    targetDistance=650.0;/*miles*/
+                    nearbyPharmacyList = new ArrayList<Pharmacy>();
+                    FirebaseDatabase mFirebaseDatabase;
+                    DatabaseReference mDatabaseReference;
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    mDatabaseReference = mFirebaseDatabase.getReference().child("/medicine-pharmacy/" + medID);
+                    mDatabaseReference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            //check if found
                             if (dataSnapshot.getValue() != null) {
-                                Toast.makeText(mContext, "here am i", Toast.LENGTH_LONG).show();
-                                double lat = (double) mChild.child("location").child("latitude").getValue();
-                                double lng = (double) mChild.child("location").child("longitude").getValue();
-                                double dist = distance(userLat, userLng, lat, lng);
-                                //check distance between PH and User to save in list Max 650 miles
-                                if (dist <= 650/*miles*/) {
-                                    String name = (String) mChild.child("name").getValue();
-                                    String img = (String) mChild.child("img").getValue();
-                                    String address = (String) mChild.child("address").getValue();
-                                    String phone = (String) mChild.child("phone").getValue();
+                                final List<String> pharmacyIdList = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
+                                if(pharmacyIdList.size()<=10)
+                                    targetDistance=1000000.0;
+                                loop:
+                                for (final String pharmacyId : pharmacyIdList) {
+                                    FirebaseDatabase mFirebaseDatabase;
+                                    DatabaseReference mDatabaseReference;
+                                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                                    mDatabaseReference = mFirebaseDatabase.getReference().child("/pharmacy/" + pharmacyId);
+                                    mDatabaseReference.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Double lat = dataSnapshot.child("location").child("latitude").getValue(Double.class);
+                                            Double lng = dataSnapshot.child("location").child("longitude").getValue(Double.class);
+                                            Double dist = distance(userLat, userLng, lat, lng);
+                                            if (dist <= targetDistance/*miles*/) {
+                                                String name = dataSnapshot.child("name").getValue(String.class);
+                                                String img = dataSnapshot.child("img").getValue(String.class);
+                                                String address = dataSnapshot.child("address").getValue(String.class);
+                                                String phone = dataSnapshot.child("phone").getValue(String.class);
+                                                //add in list
+                                                nearbyPharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
+                                                Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+                                            }
 
-                                    //add in list
-                                    nearbyPharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
-                                    Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+                                        }
 
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    if(pharmacyId==pharmacyIdList.get(pharmacyIdList.size()-1)){
+                                        if (nearbyPharmacyList.size()<10&&pharmacyIdList.size()>11){
+                                            targetDistance*=2;
+                                            break loop;
+                                        }
+                                        else{
+                                            //sort nearby list of pharmacy
+                                            getNearbyPharmacy();
+                                            listReturnValueResult.onResult(nearbyPharmacyList);
+                                        }
+                                    }
                                 }
-
                             }
                         }
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            Toast.makeText(mContext, "Faild To search", Toast.LENGTH_LONG).show();
+
                         }
                     });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
+                } else
+                    Toast.makeText(mContext, mContext.getString(R.string.med_not_exist), Toast.LENGTH_SHORT).show();
             }
         });
 
     }
 
+
     //TODO: not implemented yet
-    static public void getNearbyPharmacy(Context mContext, double mLatitude, double mLongitude) {
+    static public void getNearbyPharmacy() {
         if (nearbyPharmacyList != null) {
             sortList();
         }
@@ -145,22 +169,22 @@ public class Utiltis {
 
 
     //calculate distance between 2 PH by earth equation
-    static public double distance(double lat1, double lng1, double lat2, double lng2) {
+    static public Double distance(Double lat1, Double lng1, Double lat2, Double lng2) {
 
-        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
+        Double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
 
-        double dLat = Math.toRadians(lat2 - lat1);
-        double dLng = Math.toRadians(lng2 - lng1);
+        Double dLat = Math.toRadians(lat2 - lat1);
+        Double dLng = Math.toRadians(lng2 - lng1);
 
-        double sindLat = Math.sin(dLat / 2);
-        double sindLng = Math.sin(dLng / 2);
+        Double sindLat = Math.sin(dLat / 2);
+        Double sindLng = Math.sin(dLng / 2);
 
-        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+        Double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
                 * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
 
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        double dist = earthRadius * c;
+        Double dist = earthRadius * c;
 
         return dist; // output distance, in MILES
     }
@@ -198,7 +222,7 @@ public class Utiltis {
 
 
     //get each medicine info from firebase by its id
-    static public void getMedicineInfo(final String medID, final ReturnValueResult mReturnValueResult) {
+    static public void getMedicineInfo(final String medID, final ReturnValueResult<Medicine> mReturnValueResult) {
 
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
@@ -222,7 +246,7 @@ public class Utiltis {
 
 
     //check if medicine exist
-    static public void isMedicineExist(String medID, final ReturnValueResult mReturnValueResult) {
+    static public void isMedicineExist(String medID, final ReturnValueResult<Boolean> mReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -249,9 +273,9 @@ public class Utiltis {
     //TODO make aprove by : add in DB FB child named : aprovement , when admin open (his ui) apper to list of requestes (yes mean make this quesry by get all Data from FB)
     //add new medicine by admin or pharmacist
     static public void addNewMedicine(final Context mContext, final String medID, final String name) {
-        isMedicineExist(medID, new ReturnValueResult() {
+        isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
-            public void onResult(Object object) {
+            public void onResult(Boolean object) {
                 if (!((Boolean) object)) {
                     final HashMap<String, String> nameKey = new HashMap<String, String>() {{
                         put("name", name);
@@ -272,7 +296,7 @@ public class Utiltis {
 
 
     //search medicine by it's name then return it's ID.. return in OnResult interface with it's caller
-    static public void searchMedicineByName(final Context mContext, final String medName, final ReturnValueResult mReturnValueResult) {
+    static public void searchMedicineByName(final Context mContext, final String medName, final ReturnValueResult<String> mReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -297,7 +321,7 @@ public class Utiltis {
 
 
     //add all medicine in list to customer||pharmacist to search||add med
-    static public void getAllMedicineInList(final Context mContext, final RecyclerView mRecyclerView, final MedicineRecycleAdapter mMedicineRecycleAdapter) {
+    static public void getAllMedicineInList(final Context mContext, final RecyclerView mRecyclerView, final MedicineRecycleAdapter mMedicineRecycleAdapter, final ReturnValueResult<List<Medicine>> allMedicineListWaitingOrderReturnVaule) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -308,14 +332,15 @@ public class Utiltis {
                 //check if found
                 if (dataSnapshot.getValue() != null) {
                     //creat list of medicine that will pass to recycleView Adpter
-                    searchedMedicineList = new ArrayList<Medicine>();
+                    allSystemMedicineList = new ArrayList<Medicine>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Medicine medicine = new Medicine((String) child.child("name").getValue(), child.getKey());
-                        searchedMedicineList.add(medicine);
+                        allSystemMedicineList.add(medicine);
                     }
+                    allMedicineListWaitingOrderReturnVaule.onResult(allSystemMedicineList);
                     //TODO call into PH add, customer search
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-                    mMedicineRecycleAdapter.addList(searchedMedicineList);
+                    mMedicineRecycleAdapter.addList(allSystemMedicineList);
                     mRecyclerView.setAdapter(mMedicineRecycleAdapter);
 
                 } else {
@@ -333,7 +358,7 @@ public class Utiltis {
 
 
     //TODO: put into ui , get medicine info ,, 2 view customer,PH
-    static public void getPharmacyProfileInfo(String pharmacyID) {
+    static public void getPharmacyProfileInfo(final String pharmacyID, final ReturnValueResult<Pharmacy> returnValueResult, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -341,34 +366,24 @@ public class Utiltis {
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final List<Medicine> mMedicineList = new ArrayList<>();
-                String name = (String) dataSnapshot.child("name").getValue();
-                String address = (String) dataSnapshot.child("address").getValue();
-                String imgURL = (String) dataSnapshot.child("img").getValue();
-                String phoneNumber = (String) dataSnapshot.child("phone").getValue();
-                double lat = (double) dataSnapshot.child("latitude").getValue();
-                double lng = (double) dataSnapshot.child("longitude").getValue();
-                final List<String> medicine = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.child("medicine").getValue()).keySet());
-                for (final String medID : medicine) {
-                    getMedicineInfo(medID, new ReturnValueResult() {
-                        @Override
-                        public void onResult(Object med) {
-
-                            mMedicineList.add((Medicine) med);
-                            if (medicine.get(medicine.size() - 1) == medID) {
-                                //TODO: output into ui
-                            }
-                        }
-                    });
-
-                }
+                mMedicineList = new ArrayList<>();
+                final String name = (String) dataSnapshot.child("name").getValue();
+                final String address = (String) dataSnapshot.child("address").getValue();
+                final String imgURL = (String) dataSnapshot.child("img").getValue();
+                final String phoneNumber = (String) dataSnapshot.child("phone").getValue();
+                final Double lat = dataSnapshot.child("latitude").getValue(Double.class);
+                final Double lng = dataSnapshot.child("longitude").getValue(Double.class);
+                currentPharmacy = new Pharmacy(name, lat, lng, 0.0, address, imgURL, phoneNumber);
+                returnValueResult.onResult(currentPharmacy);
+                getPharmacyProfileMedicine(pharmacyID,medicineReturnValueResult);
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-//                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
+            public void onCancelled(DatabaseError databaseError) {
+
             }
+
+
         });
     }
 
@@ -434,7 +449,7 @@ public class Utiltis {
                         }
                     });
                     Intent intent = new Intent(mContext, SignUpContinueActivity.class);
-                    intent.putExtra(mContext.getString(R.string.Pharmacy_id), task.getResult().getUser().getUid().toString());
+                    intent.putExtra(mContext.getString(R.string.pharmacy_id), task.getResult().getUser().getUid().toString());
                     mContext.startActivity(intent);
                     ((Activity) mContext).finish();
                 } else {
@@ -446,9 +461,9 @@ public class Utiltis {
     }
 
     static public void pharmacySignUpContinue(final Context mContext, final String userID, final Uri imageURI, final String address, final String phone) {
-        final ReturnValueResult returnValueResult = new ReturnValueResult() {
+        final ReturnValueResult<Uri> returnValueResult = new ReturnValueResult<Uri>() {
             @Override
-            public void onResult(final Object downloadUrl) {
+            public void onResult(final Uri downloadUrl) {
 
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("/pharmacy/" + userID);
@@ -456,15 +471,20 @@ public class Utiltis {
                     {
                         if (address != null)
                             put("address", address);
-                        if ((Uri) downloadUrl == null || imageURI == null)
-                            put("img", "gs://pharmacien-e9a90.appspot.com/pharmacyProfile/defult.png");
+                        if (downloadUrl == null || imageURI == null)
+                            put("img", "https://firebasestorage.googleapis.com/v0/b/pharmacien-e9a90.appspot.com/o/pharmacyProfile%2Fdefult.png?alt=media&token=a5165e48-296e-44e5-966c-397361adba5c");
                         else
-                            put("imag", ((Uri) downloadUrl).toString());
+                            put("img", (downloadUrl).toString());
                         if (phone != null)
                             put("phone", phone);
 
                     }
+
                 });
+                Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
+                intent.putExtra(mContext.getString(R.string.pharmacy_id), userID);
+                mContext.startActivity(intent);
+                ((Activity) mContext).finish();
             }
         };
         final Uri[] downloadUrl = new Uri[1];
@@ -477,23 +497,112 @@ public class Utiltis {
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                     downloadUrl[0] = taskSnapshot.getDownloadUrl();
-                    returnValueResult.onResult((Uri) downloadUrl[0]);
+                    returnValueResult.onResult(downloadUrl[0]);
                 }
             });
-        }
-        else {
+        } else {
             returnValueResult.onResult(null);
         }
-        Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
-        intent.putExtra(mContext.getString(R.string.Pharmacy_id), userID);
-        mContext.startActivity(intent);
-        ((Activity) mContext).finish();
     }
+
+
+    static public void logIn(final Context mContext, String email, String password) {
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                currentUser = task.getResult().getUser();
+                Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
+                intent.putExtra(mContext.getString(R.string.pharmacy_id), currentUser.getUid());
+                mContext.startActivity(intent);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mContext, "This Email Not Registed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    //open profile pharmacy
+//    static public void getPharmacyProfileInfoMedicine(final String pharmacyID, final ReturnValueResult<Pharmacy> infoReturnValueResult, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
+//        getPharmacyProfileInfo(pharmacyID, infoReturnValueResult);
+//        getPharmacyProfileMedicine(pharmacyID,medicineReturnValueResult);
+//    }
+
+    //customer on pharmacy click
+//    static public void getPharmacyProfileInfoUser(final String pharmacyID, final ReturnValueResult<Pharmacy> infoReturnValueResult) {
+//        getPharmacyProfileInfo(pharmacyID, infoReturnValueResult);
+//    }
+
+    static public void getPharmacyProfileMedicine(final String pharmacyID, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
+        FirebaseDatabase mFirebaseDatabase;
+        DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID+"/medicine");
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mMedicineList = new ArrayList<>();
+                if ((dataSnapshot.getValue()) == null){
+                    currentPharmacy.setMedicine(mMedicineList);
+                    medicineReturnValueResult.onResult(currentPharmacy);
+                    return;
+                }
+
+                final List<String> medicine = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
+                for (final String medID : medicine) {
+                    getMedicineInfo(medID, new ReturnValueResult<Medicine>() {
+                        @Override
+                        public void onResult(Medicine med) {
+                            mMedicineList.add(med);
+                            if (medicine.get(medicine.size() - 1) == medID) {
+                                currentPharmacy.setMedicine(mMedicineList);
+                                medicineReturnValueResult.onResult(currentPharmacy);
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+//                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    static public Task<Void> addMedicineToPharmacy(final String pharmacyID, final String medicineID) {
+        FirebaseDatabase mFirebaseDatabase;
+        DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        HashMap<String,Object> medicineUpdate=new HashMap<String ,Object>(){{
+            put("medicine-pharmacy/"+medicineID+"/"+pharmacyID,true);
+            put("pharmacy/"+pharmacyID+"/medicine/"+medicineID,true);
+        }};
+        mDatabaseReference=mFirebaseDatabase.getReference();
+        return mDatabaseReference.updateChildren(medicineUpdate);
+    }
+
+    static public Task<Void> deleteMedicineFromPharmacy(final String pharmacyID, final String medicineID) {
+        FirebaseDatabase mFirebaseDatabase;
+        DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        HashMap<String,Object> medicineUpdate=new HashMap<String ,Object>(){{
+            put("medicine-pharmacy/"+medicineID+"/"+pharmacyID,null);
+            put("pharmacy/"+pharmacyID+"/medicine/"+medicineID,null);
+        }};
+        mDatabaseReference=mFirebaseDatabase.getReference();
+        return mDatabaseReference.updateChildren(medicineUpdate);
+    }
+
+
 
     //this interface act between function and caller to get a return value form background thread
-    public interface ReturnValueResult {
-        public void onResult(Object object);
+    public interface ReturnValueResult<T> {
+        public void onResult(T object);
     }
-
-
 }
