@@ -20,4 +20,13 @@ public class Medicine {
     public String getMedID() {
         return medID;
     }
+
+    @Override
+    public boolean equals(Object anObject) {
+        if (!(anObject instanceof Medicine)) {
+            return false;
+        }
+        Medicine otherMember = (Medicine)anObject;
+        return otherMember.getMedID().equals(getMedID());
+    }
 }

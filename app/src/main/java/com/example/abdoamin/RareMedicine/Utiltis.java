@@ -5,14 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
+import com.example.abdoamin.RareMedicine.activity.CustomerSearchActivity;
+import com.example.abdoamin.RareMedicine.activity.LogInActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
+import com.example.abdoamin.RareMedicine.activity.SwitchModeActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
@@ -41,7 +50,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Abdo Amin on 11/25/2017.
@@ -78,7 +89,7 @@ public class Utiltis {
             @Override
             public void onResult(Boolean exist) {
                 if (exist) {
-                    targetDistance=650.0;/*miles*/
+                    targetDistance = 650.0;/*miles*/
                     nearbyPharmacyList = new ArrayList<Pharmacy>();
                     FirebaseDatabase mFirebaseDatabase;
                     DatabaseReference mDatabaseReference;
@@ -89,8 +100,8 @@ public class Utiltis {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 final List<String> pharmacyIdList = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
-                                if(pharmacyIdList.size()<=10)
-                                    targetDistance=1000000.0;
+                                if (pharmacyIdList.size() <= 10)
+                                    targetDistance = 1000000.0;
                                 loop:
                                 for (final String pharmacyId : pharmacyIdList) {
                                     FirebaseDatabase mFirebaseDatabase;
@@ -111,6 +122,16 @@ public class Utiltis {
                                                 //add in list
                                                 nearbyPharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
                                                 Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+                                                if (pharmacyId == pharmacyIdList.get(pharmacyIdList.size() - 1)) {
+                                                    if (nearbyPharmacyList.size() < 10 && pharmacyIdList.size() > 11) {
+                                                        targetDistance *= 2;
+//                                                        return loop;
+                                                    } else {
+                                                        //sort nearby list of pharmacy
+                                                        getNearbyPharmacy();
+                                                        listReturnValueResult.onResult(nearbyPharmacyList);
+                                                    }
+                                                }
                                             }
 
                                         }
@@ -121,17 +142,7 @@ public class Utiltis {
                                         }
                                     });
 
-                                    if(pharmacyId==pharmacyIdList.get(pharmacyIdList.size()-1)){
-                                        if (nearbyPharmacyList.size()<10&&pharmacyIdList.size()>11){
-                                            targetDistance*=2;
-                                            break loop;
-                                        }
-                                        else{
-                                            //sort nearby list of pharmacy
-                                            getNearbyPharmacy();
-                                            listReturnValueResult.onResult(nearbyPharmacyList);
-                                        }
-                                    }
+
                                 }
                             }
                         }
@@ -342,6 +353,9 @@ public class Utiltis {
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
                     mMedicineRecycleAdapter.addList(allSystemMedicineList);
                     mRecyclerView.setAdapter(mMedicineRecycleAdapter);
+                    mRecyclerView.setHasFixedSize(true);
+                    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                    mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
 
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.no_med_in_firebase), Toast.LENGTH_LONG).show();
@@ -375,7 +389,7 @@ public class Utiltis {
                 final Double lng = dataSnapshot.child("longitude").getValue(Double.class);
                 currentPharmacy = new Pharmacy(name, lat, lng, 0.0, address, imgURL, phoneNumber);
                 returnValueResult.onResult(currentPharmacy);
-                getPharmacyProfileMedicine(pharmacyID,medicineReturnValueResult);
+                getPharmacyProfileMedicine(pharmacyID, medicineReturnValueResult);
             }
 
             @Override
@@ -539,12 +553,12 @@ public class Utiltis {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID+"/medicine");
+        mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID + "/medicine");
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mMedicineList = new ArrayList<>();
-                if ((dataSnapshot.getValue()) == null){
+                if ((dataSnapshot.getValue()) == null) {
                     currentPharmacy.setMedicine(mMedicineList);
                     medicineReturnValueResult.onResult(currentPharmacy);
                     return;
@@ -575,31 +589,108 @@ public class Utiltis {
     }
 
 
-    static public Task<Void> addMedicineToPharmacy(final String pharmacyID, final String medicineID) {
+    static public void addMedicineToPharmacy(final String pharmacyID, final String medicineID, final ReturnValueResult<Boolean> taskReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        HashMap<String,Object> medicineUpdate=new HashMap<String ,Object>(){{
-            put("medicine-pharmacy/"+medicineID+"/"+pharmacyID,true);
-            put("pharmacy/"+pharmacyID+"/medicine/"+medicineID,true);
+        HashMap<String, Object> medicineUpdate = new HashMap<String, Object>() {{
+            put("medicine-pharmacy/" + medicineID + "/" + pharmacyID, true);
+            put("pharmacy/" + pharmacyID + "/medicine/" + medicineID, true);
         }};
-        mDatabaseReference=mFirebaseDatabase.getReference();
-        return mDatabaseReference.updateChildren(medicineUpdate);
+        mDatabaseReference = mFirebaseDatabase.getReference();
+        mDatabaseReference.updateChildren(medicineUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    taskReturnValueResult.onResult(true);
+                else
+                    taskReturnValueResult.onResult(false);
+            }
+        });
     }
 
-    static public Task<Void> deleteMedicineFromPharmacy(final String pharmacyID, final String medicineID) {
+    static public void deleteMedicineFromPharmacy(final String pharmacyID, final String medicineID, final ReturnValueResult<Boolean> taskReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        HashMap<String,Object> medicineUpdate=new HashMap<String ,Object>(){{
-            put("medicine-pharmacy/"+medicineID+"/"+pharmacyID,null);
-            put("pharmacy/"+pharmacyID+"/medicine/"+medicineID,null);
+        HashMap<String, Object> medicineUpdate = new HashMap<String, Object>() {{
+            put("medicine-pharmacy/" + medicineID + "/" + pharmacyID, null);
+            put("pharmacy/" + pharmacyID + "/medicine/" + medicineID, null);
         }};
-        mDatabaseReference=mFirebaseDatabase.getReference();
-        return mDatabaseReference.updateChildren(medicineUpdate);
+        mDatabaseReference = mFirebaseDatabase.getReference();
+        mDatabaseReference.updateChildren(medicineUpdate).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    taskReturnValueResult.onResult(true);
+                else
+                    taskReturnValueResult.onResult(false);
+            }
+        });
+
+    }
+
+    //all menu
+    static public void userMenuOnSelect( Context mContextint ,int itemMenuID){
+        switch(itemMenuID){
+            case R.id.user_menu_search_medicine:
+                mContextint.startActivity(new Intent(mContextint, CustomerSearchActivity.class));
+                break;
+            case R.id.user_menu_switch_mode:
+                mContextint.startActivity(new Intent(mContextint, SwitchModeActivity.class));
+                break;
+        }
+
+    }
+
+    static public void pharmacistMenuOnSelect( Context mContextint ,int itemMenuID){
+        switch(itemMenuID){
+            case R.id.pharmacist_menu_profile:
+                mContextint.startActivity(new Intent(mContextint, PharmacyProfileActivity.class));
+                break;
+            case R.id.pharmacist_menu_edit_profile:
+                //todo create edit activity
+                break;
+            case R.id.pharmacist_menu_log_out:
+                //todo logout
+                break;
+            case R.id.pharmacist_menu_switch_mode:
+                mContextint.startActivity(new Intent(mContextint, SwitchModeActivity.class));
+                break;
+        }
+
+    }
+
+    static public void NoneMenuOnSelect( Context mContextint ,int itemMenuID){
+        switch(itemMenuID){
+            case R.id.switch_mode_user:
+                //todo add prefrance
+                mContextint.startActivity(new Intent(mContextint, CustomerSearchActivity.class));
+                break;
+            case R.id.switch_mode_pharmacist:
+                //todo add prefrance
+                mContextint.startActivity(new Intent(mContextint, LogInActivity.class));
+                break;
+            case R.id.switch_mode_rate_us:
+                //todo rate later
+                break;
+            case R.id.switch_mode_language:
+                // TODO: language later
+                break;
+        }
+
     }
 
 
+
+
+    static public <T> void removeDuplicatedItemsInList(List<T> mList) {
+    // add elements to al, including duplicates
+        Set<T> hs = new HashSet<T>();
+        hs.addAll(mList);
+        mList.clear();
+        mList.addAll(hs);
+    }
 
     //this interface act between function and caller to get a return value form background thread
     public interface ReturnValueResult<T> {

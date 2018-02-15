@@ -58,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
             }
             @Override
             public void onFinish() {
-                startActivity(new Intent(SplashActivity.this,LogInActivity.class));
+                startActivity(new Intent(SplashActivity.this,SwitchModeActivity.class));
                 finish();
             }
 

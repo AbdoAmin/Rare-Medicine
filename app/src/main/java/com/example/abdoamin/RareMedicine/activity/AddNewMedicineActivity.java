@@ -42,4 +42,5 @@ public class AddNewMedicineActivity extends AppCompatActivity {
     void openBarcodActivity(){
         Utiltis.barCode(this);
     }
+
 }

@@ -35,7 +35,8 @@
         android:id="@+id/searsh_medicine_result_open_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="open all pharmacy map"
-        tools:layout_editor_absoluteX="91dp"
-        tools:layout_editor_absoluteY="89dp" />
+        app:layout_constraintBottom_toTopOf="@+id/searsh_medicine_result_nearb_pharmacy_recycleView"
+        tools:layout_editor_absoluteX="91dp" />
 </android.support.constraint.ConstraintLayout>

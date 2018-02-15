@@ -32,7 +32,6 @@ public class BarCodeActivity extends AppCompatActivity implements BarcodeReader.
 
         // get the barcode reader instance
         barcodeReader = (BarcodeReader) getSupportFragmentManager().findFragmentById(R.id.barcode_scanner);
-
     }
 
     @Override

@@ -5,19 +5,19 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/switch_mode_user"
             android:icon="@drawable/ic_menu_camera"
             android:title="Search for medicine" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/switch_mode_pharmacist"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Pharmacist" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/switch_mode_rate_us"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Rate us" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/switch_mode_language"
             android:icon="@drawable/ic_menu_manage"
             android:title="Language" />
     </group>

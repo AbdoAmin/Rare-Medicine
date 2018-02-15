@@ -5,16 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/pharmacist_menu_profile"
             android:icon="@drawable/ic_menu_camera"
             android:title="Profile" />
 
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/pharmacist_menu_edit_profile"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Edit Profile" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/pharmacist_menu_log_out"
             android:icon="@drawable/ic_menu_manage"
             android:title="LogOut" />
     </group>
@@ -22,7 +22,7 @@
     <item android:title="Setting">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/pharmacist_menu_switch_mode"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Switch Mode" />
         </menu>

@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SearchMedicineResultActivity extends AppCompatActivity {
-    @BindView(R.id.customer_search_medicine_list_recycleView)RecyclerView mPharmacyRecycleView;
+    @BindView(R.id.searsh_medicine_result_nearb_pharmacy_recycleView)RecyclerView mPharmacyRecycleView;
 
 
     @Override

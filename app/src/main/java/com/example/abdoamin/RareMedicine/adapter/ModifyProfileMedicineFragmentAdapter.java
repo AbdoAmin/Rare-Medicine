@@ -5,13 +5,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.abdoamin.RareMedicine.ProfileModifyMedicineFragment;
+
+import com.example.abdoamin.RareMedicine.AddProfileMedicineFragment;
+import com.example.abdoamin.RareMedicine.DeleteProfileMedicineFragment;
+
 
 /**
  * Created by Abdo Amin on 2/9/2018.
  */
 
 public class ModifyProfileMedicineFragmentAdapter extends FragmentPagerAdapter {
+    static public int currentTabIndex;
+
     public ModifyProfileMedicineFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -21,10 +26,10 @@ public class ModifyProfileMedicineFragmentAdapter extends FragmentPagerAdapter {
         switch (position) {
             case 0://top Rated
 //                return new TopRatedFragment();
-                return ProfileModifyMedicineFragment.newInstance("Delete");
+                return DeleteProfileMedicineFragment.newInstance();
             case 1:
 //                return  new PopularFragment();
-                return ProfileModifyMedicineFragment.newInstance("Add");
+                return AddProfileMedicineFragment.newInstance();
         }
         return null;
     }
@@ -51,5 +56,4 @@ public class ModifyProfileMedicineFragmentAdapter extends FragmentPagerAdapter {
         return POSITION_NONE;
 
     }
-
 }

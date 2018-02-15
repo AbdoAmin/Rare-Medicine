@@ -87,5 +87,4 @@ public class Pharmacy {
     public void setMedicine(List<Medicine> medicineList){
         medicine=medicineList;
     }
-
 }
