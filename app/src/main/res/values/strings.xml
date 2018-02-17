@@ -23,5 +23,6 @@
     <string name="splash_screen">Splash screen</string>
     <string name="pharmacy_id" translatable="false">pharmacyID</string>
     <string name="pharmacy_position" translatable="false">position</string>
+    <string name="CURRENT_MODE" translatable="false">Current Application User Mode</string>
 
 </resources>

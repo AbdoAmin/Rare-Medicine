@@ -4,10 +4,13 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +37,9 @@ public class PharmacyProfileUserActivity extends AppCompatActivity implements On
     TextView phone;
     @BindView(R.id.pharmacy_profile_address_textView)
     TextView address;
-
+    @BindView(R.id.drawer_layout)DrawerLayout drawer;
+    @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.toolbar)Toolbar toolbar;
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     GoogleMap mMap;
@@ -43,8 +48,12 @@ public class PharmacyProfileUserActivity extends AppCompatActivity implements On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pharmacy_profile_user);
+        setContentView(R.layout.menu_activity_pharmacy_profile_user);
         ButterKnife.bind(this);
+
+        //menu
+        Utiltis.setUpMenuNavView(this,toolbar,drawer,navigationView,Utiltis.MODE_USER);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.pharmacy_profile_user_map);
         mapFragment.getMapAsync(this);

@@ -14,7 +14,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
+
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,15 +37,35 @@
         <activity
             android:name=".activity.PharmacyMapActivity"
             android:label="@string/title_activity_pharmacy_map" />
-        <activity android:name=".activity.PharmacyProfileUserActivity" />
-        <activity android:name=".activity.PharmacyProfileActivity" />
-        <activity android:name=".activity.LogInActivity" />
-        <activity android:name=".activity.SearchMedicineResultActivity" />
-        <activity android:name=".activity.CustomerSearchActivity" />
+        <activity
+            android:name=".activity.PharmacyProfileUserActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PharmacyProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.LogInActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SearchMedicineResultActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.CustomerSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+             />
         <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.AddNewMedicineActivity" />
-        <activity android:name=".activity.PharmacyAddMedicineActivity" />
-        <activity android:name=".activity.SignUpContinueActivity"></activity>
+        <activity
+            android:name=".activity.AddNewMedicineActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PharmacyAddMedicineActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.SignUpContinueActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PharmacyEditProfile"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

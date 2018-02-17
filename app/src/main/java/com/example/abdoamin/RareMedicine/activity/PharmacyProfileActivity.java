@@ -2,10 +2,13 @@ package com.example.abdoamin.RareMedicine.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +34,9 @@ public class PharmacyProfileActivity extends AppCompatActivity {
     TextView address;
     @BindView(R.id.pharmacy_profile_medicine_recycleView)
     RecyclerView mMedicineRecycleView;
+    @BindView(R.id.drawer_layout)DrawerLayout drawer;
+    @BindView(R.id.nav_view)NavigationView navigationView;
+    @BindView(R.id.toolbar)Toolbar toolbar;
 
     String pharmacyID;
     Pharmacy mPharmacy;
@@ -40,8 +46,11 @@ public class PharmacyProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pharmacy_profile);
+        setContentView(R.layout.menu_activity_pharmacy_profile);
         ButterKnife.bind(this);
+        //menu
+        Utiltis.setUpMenuNavView(this,toolbar,drawer,navigationView,Utiltis.MODE_PHARMACIST);
+
         pharmacyID = getIntent().getStringExtra(getString(R.string.pharmacy_id));
         if (pharmacyID == null)
             finish();

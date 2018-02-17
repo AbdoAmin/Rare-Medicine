@@ -3,21 +3,26 @@ package com.example.abdoamin.RareMedicine;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.abdoamin.RareMedicine.activity.BarCodeActivity;
 import com.example.abdoamin.RareMedicine.activity.CustomerSearchActivity;
 import com.example.abdoamin.RareMedicine.activity.LogInActivity;
+import com.example.abdoamin.RareMedicine.activity.PharmacyEditProfile;
 import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
@@ -54,6 +59,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Abdo Amin on 11/25/2017.
  */
@@ -75,7 +82,13 @@ public class Utiltis {
     //for author pharmacy
     public static FirebaseAuth mAuth;
     public static FirebaseUser currentUser;
+    //for search algorithm
     static Double targetDistance;
+
+    //current mode of program used by preference
+    static public final String MODE_NONE = "None";
+    static public final String MODE_USER = "User";
+    static public final String MODE_PHARMACIST = "Pharmacist";
 
     /*
      * this Algorithm
@@ -631,61 +644,157 @@ public class Utiltis {
     }
 
     //all menu
-    static public void userMenuOnSelect( Context mContextint ,int itemMenuID){
-        switch(itemMenuID){
+    static public void userMenuOnSelect(Context mContext, int itemMenuID) {
+        switch (itemMenuID) {
             case R.id.user_menu_search_medicine:
-                mContextint.startActivity(new Intent(mContextint, CustomerSearchActivity.class));
+                mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case R.id.user_menu_switch_mode:
-                mContextint.startActivity(new Intent(mContextint, SwitchModeActivity.class));
+                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
+                ((Activity) mContext).finish();
                 break;
         }
 
     }
 
-    static public void pharmacistMenuOnSelect( Context mContextint ,int itemMenuID){
-        switch(itemMenuID){
+    static public void pharmacistMenuOnSelect(Context mContext, int itemMenuID) {
+        switch (itemMenuID) {
             case R.id.pharmacist_menu_profile:
-                mContextint.startActivity(new Intent(mContextint, PharmacyProfileActivity.class));
+                mContext.startActivity(new Intent(mContext, PharmacyProfileActivity.class));
                 break;
             case R.id.pharmacist_menu_edit_profile:
-                //todo create edit activity
+                mContext.startActivity(new Intent(mContext, PharmacyEditProfile.class));
                 break;
             case R.id.pharmacist_menu_log_out:
                 //todo logout
                 break;
             case R.id.pharmacist_menu_switch_mode:
-                mContextint.startActivity(new Intent(mContextint, SwitchModeActivity.class));
+                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
+                ((Activity) mContext).finish();
                 break;
         }
 
     }
 
-    static public void NoneMenuOnSelect( Context mContextint ,int itemMenuID){
-        switch(itemMenuID){
+    static public void NoneMenuOnSelect(Context mContext, int itemMenuID) {
+        switch (itemMenuID) {
             case R.id.switch_mode_user:
-                //todo add prefrance
-                mContextint.startActivity(new Intent(mContextint, CustomerSearchActivity.class));
+                setUpMyPreferenceMode(mContext, MODE_USER);
+                mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case R.id.switch_mode_pharmacist:
-                //todo add prefrance
-                mContextint.startActivity(new Intent(mContextint, LogInActivity.class));
-                break;
-            case R.id.switch_mode_rate_us:
-                //todo rate later
-                break;
-            case R.id.switch_mode_language:
-                // TODO: language later
+                setUpMyPreferenceMode(mContext, MODE_PHARMACIST);
+                mContext.startActivity(new Intent(mContext, LogInActivity.class));
                 break;
         }
 
     }
 
 
+    //Here Preference Part to get last mode,Top rated mode as default
+    static public void setUpMyPreferenceMode(Context mContext, String mode) {
+        SharedPreferences.Editor editor = mContext.getSharedPreferences(mContext.getString(R.string.CURRENT_MODE), MODE_PRIVATE).edit();
+        editor.putString(mContext.getString(R.string.CURRENT_MODE), mode);
+        editor.apply();
+    }
+
+    static public void getMyPreferenceMode(Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences(mContext.getString(R.string.CURRENT_MODE), MODE_PRIVATE);
+        String currentMode = prefs.getString(mContext.getString(R.string.CURRENT_MODE), MODE_NONE);
+        switch (currentMode) {
+            case MODE_NONE:
+                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
+                break;
+            case MODE_USER:
+                mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
+                break;
+            case MODE_PHARMACIST:
+                mContext.startActivity(new Intent(mContext, LogInActivity.class));
+                break;
+        }
+    }
+    //End..
+
+
+    static public void setUpMenuNavView(final Context mContext, Toolbar toolbar, final DrawerLayout drawer, NavigationView navigationView, final String menueType) {
+        NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressWarnings("StatementWithEmptyBody")
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                // Handle navigation view item clicks here.
+                int id = item.getItemId();
+                switch (menueType) {
+                    case MODE_NONE:
+                        NoneMenuOnSelect(mContext, id);
+                        break;
+                    case MODE_USER:
+                        userMenuOnSelect(mContext, id);
+                        break;
+                    case MODE_PHARMACIST:
+                        pharmacistMenuOnSelect(mContext, id);
+                        break;
+                }
+                drawer.closeDrawer(GravityCompat.START);
+
+                return true;
+            }
+        };
+
+
+        ((AppCompatActivity) mContext).setSupportActionBar(toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                ((AppCompatActivity) mContext), drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
+
+        switch (menueType) {
+            case MODE_NONE:
+                navigationView.inflateMenu(R.menu.activity_mode_switch_drawer);
+                break;
+            case MODE_USER:
+                navigationView.inflateMenu(R.menu.user_menu);
+                break;
+            case MODE_PHARMACIST:
+                navigationView.inflateMenu(R.menu.pharmacist_menu);
+                break;
+        }
+
+
+    }
+
+    static public void editPharmacyInfo(Context mContext, final String userID, final Uri imageURI, final String address, final String phone, final String name, final double latitude, final double longitude) {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("/pharmacy/" + userID);
+        myRef.updateChildren(new HashMap<String, Object>() {
+            {
+                if (name != null)
+                    put("name", name);
+                if (address != null)
+                    put("address", address);
+                if (phone != null)
+                    put("phone", phone);
+                if (imageURI != null)
+                    put("img", imageURI);
+                if (latitude != 0 && longitude != 0)
+                    put("location", new HashMap<String, Double>() {
+                        {
+                            put("latitude", latitude);
+                            put("longitude", longitude);
+                        }
+                    });
+            }
+        });
+        Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
+        mContext.startActivity(intent);
+        ((Activity) mContext).finish();
+    }
 
 
     static public <T> void removeDuplicatedItemsInList(List<T> mList) {
-    // add elements to al, including duplicates
+        // add elements to al, including duplicates
         Set<T> hs = new HashSet<T>();
         hs.addAll(mList);
         mList.clear();

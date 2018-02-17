@@ -7,38 +7,39 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/imageView7"
+        <include
+            android:id="@+id/i1"
+            layout="@layout/app_bar_switch_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/include_pharmacy_add"
+            layout="@layout/activity_pharmacy_add_medicine"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="100dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/i7"
-            app:srcCompat="@drawable/logo_small" />
+            app:layout_constraintTop_toBottomOf="@id/i1" />
 
-        <include
-            android:id="@+id/i7"
-            layout="@layout/app_bar_switch_mode"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
+
 
     </android.support.constraint.ConstraintLayout>
-
-
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginTop="8dp"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_switch_mode"/>
+        app:headerLayout="@layout/nav_header_switch_mode"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.v4.widget.DrawerLayout>

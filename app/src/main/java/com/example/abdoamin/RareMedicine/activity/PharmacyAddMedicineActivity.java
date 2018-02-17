@@ -1,14 +1,18 @@
 package com.example.abdoamin.RareMedicine.activity;
 
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.example.abdoamin.RareMedicine.AddProfileMedicineFragment;
 import com.example.abdoamin.RareMedicine.DeleteProfileMedicineFragment;
 import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.ModifyProfileMedicineFragmentAdapter;
 
 import butterknife.BindView;
@@ -20,15 +24,23 @@ public class PharmacyAddMedicineActivity extends AppCompatActivity {
     public TabLayout mTabLayout;
     @BindView(R.id.pharmacy_add_medicine_viewPager)
     ViewPager mViewPager;
-
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     static public String code;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pharmacy_add_medicine);
+        setContentView(R.layout.menu_activity_pharmacy_add_medicine);
         ButterKnife.bind(this);
+        //menu
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST);
+
         final ModifyProfileMedicineFragmentAdapter mModifyProfileMedicineFragmentAdapter =
                 new ModifyProfileMedicineFragmentAdapter(getSupportFragmentManager());
 
@@ -49,12 +61,12 @@ public class PharmacyAddMedicineActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int newPosition) {
                 Fragment page = getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pharmacy_add_medicine_viewPager + ":" + mViewPager.getCurrentItem());
-                switch (mViewPager.getCurrentItem()){
+                switch (mViewPager.getCurrentItem()) {
                     case 1:
-                        ((AddProfileMedicineFragment)page).prepareToAdd();
+                        ((AddProfileMedicineFragment) page).prepareToAdd();
                         break;
                     case 0:
-                        ((DeleteProfileMedicineFragment)page).prepareToDelete();
+                        ((DeleteProfileMedicineFragment) page).prepareToDelete();
                         break;
                 }
             }
