@@ -9,9 +9,7 @@ import java.util.List;
 public class Pharmacy {
     private String name;
 
-    private Double latitude;
-
-    private Double longitude;
+    private Location location;
 
     private Double distance;
 
@@ -23,45 +21,35 @@ public class Pharmacy {
 
     private List<Medicine> medicine;
 
-    public Pharmacy(String name, Double latitude, Double longitude, Double distance) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Pharmacy(){}
+
+    public Pharmacy(String name, Location location, Double distance) {
+        this.location = location;
         this.distance = distance;
         this.name = name;
     }
 
-    public Pharmacy(String name, Double latitude, Double longitude, Double distance, String address, String img, String phone) {
+    public Pharmacy(String name, Location location, Double distance, String address, String img, String phone) {
         this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.location = location;
         this.distance = distance;
         this.address = address;
         this.img = img;
         this.phone = phone;
     }
 
-    public Pharmacy(String name, Double latitude, Double longitude, Double distance, String address, String imgURL, String phoneNumber, List<Medicine> medicine) {
 
-        this.name = name;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.distance = distance;
-        this.address = address;
-        this.img = imgURL;
-        this.phone = phoneNumber;
-        this.medicine = medicine;
-    }
 
     public String getName() {
         return name;
     }
 
     public Double getLatitude() {
-        return latitude;
+        return location.getLatitude();
     }
 
     public Double getLongitude() {
-        return longitude;
+        return location.getLongitude();
     }
 
     public Double getDistance() {
@@ -84,7 +72,16 @@ public class Pharmacy {
         return medicine;
     }
 
-    public void setMedicine(List<Medicine> medicineList){
-        medicine=medicineList;
+    public void setMedicine(List<Medicine> medicineList) {
+        medicine = medicineList;
+    }
+
+    @Override
+    public boolean equals(Object anObject) {
+        if (!(anObject instanceof Pharmacy)) {
+            return false;
+        }
+        Pharmacy otherMember = (Pharmacy) anObject;
+        return otherMember.getLatitude().equals(getLatitude()) && otherMember.getLongitude().equals(getLongitude());
     }
 }

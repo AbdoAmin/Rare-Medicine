@@ -1,6 +1,8 @@
 package com.example.abdoamin.RareMedicine.activity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.example.abdoamin.RareMedicine.NetworkChangeReceiver;
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
@@ -34,23 +37,21 @@ public class CustomerSearchActivity extends AppCompatActivity {
     ImageButton searchBtn;
     @BindView(R.id.customer_search_barcode_btn)
     Button barcodeBtn;
+    //menu
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
     @BindView(R.id.nav_view)
     NavigationView navigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     MedicineRecycleAdapter mMedicineRecycleAdapter;
     ArrayList<Medicine> medicineArrayList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity_customer_search);
-        ButterKnife.setDebug(true);
         ButterKnife.bind(this);
-
-
         //menu
         Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_USER);
 
@@ -111,4 +112,21 @@ public class CustomerSearchActivity extends AppCompatActivity {
         //TODO complete searchMedicine function
     }
 
+    NetworkChangeReceiver receiver;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        receiver=new NetworkChangeReceiver();
+        registerReceiver(
+                receiver,
+                new IntentFilter(
+                        ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+        Utiltis.removeEventListener();
+    }
 }

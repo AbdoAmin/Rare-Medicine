@@ -1,8 +1,11 @@
 package com.example.abdoamin.RareMedicine.activity;
 
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,11 +23,22 @@ public class LogInActivity extends AppCompatActivity {
     @BindView(R.id.log_in_log_in_btn)Button logInBtn;
     @BindView(R.id.log_in_sign_up_btn)Button signUpBtn;
 
+    //menu
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
+        setContentView(R.layout.menu_activity_sign_in);
         ButterKnife.bind(this);
+        //menu
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST_NONE);
+
     }
     @OnClick(R.id.log_in_sign_up_btn)
     void onSignUpBtnClick(){

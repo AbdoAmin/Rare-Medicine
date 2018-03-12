@@ -7,6 +7,8 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
@@ -23,6 +25,15 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         Utiltis.getCurrentUserLocation(this);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            Toast.makeText(this, auth.getUid(), Toast.LENGTH_LONG).show();
+            Log.e("^_^:Abdo:",auth.getUid());
+        }
+        else {
+            Toast.makeText(this, "No", Toast.LENGTH_LONG).show();
+            Log.e("^_^:Abdo:","NO AUTH");
+        }
 
         new CountDownTimer(1000, 1000) {
 
@@ -37,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
             }
 
         }.start();
+
 
 
     }
@@ -67,5 +79,9 @@ public class SplashActivity extends AppCompatActivity {
 //        Utiltis.mAuth= FirebaseAuth.getInstance();
 //        Utiltis.mAuth.signInWithEmailAndPassword()
                 //Todo get prefrance email and pass
+    }
+
+    void openGpsWifi(){
+
     }
 }

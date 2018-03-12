@@ -28,6 +28,7 @@ import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
 import com.example.abdoamin.RareMedicine.activity.SwitchModeActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
+import com.example.abdoamin.RareMedicine.object.Location;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -42,6 +43,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -83,12 +85,16 @@ public class Utiltis {
     public static FirebaseAuth mAuth;
     public static FirebaseUser currentUser;
     //for search algorithm
-    static Double targetDistance;
+    static Double targetDistance = 650.0;
+
+    private static List<DatabaseReference> mDatabaseReferenceList = new ArrayList<>();
+    private static List<ValueEventListener> mValueEventListenerList = new ArrayList<>();
 
     //current mode of program used by preference
     static public final String MODE_NONE = "None";
     static public final String MODE_USER = "User";
     static public final String MODE_PHARMACIST = "Pharmacist";
+    static public final String MODE_PHARMACIST_NONE = "Un signed Pharmacist";
 
     /*
      * this Algorithm
@@ -102,26 +108,24 @@ public class Utiltis {
             @Override
             public void onResult(Boolean exist) {
                 if (exist) {
-                    targetDistance = 650.0;/*miles*/
                     nearbyPharmacyList = new ArrayList<Pharmacy>();
                     FirebaseDatabase mFirebaseDatabase;
                     DatabaseReference mDatabaseReference;
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
                     mDatabaseReference = mFirebaseDatabase.getReference().child("/medicine-pharmacy/" + medID);
-                    mDatabaseReference.addValueEventListener(new ValueEventListener() {
+                    ValueEventListener valueEventListener = new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
                                 final List<String> pharmacyIdList = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
                                 if (pharmacyIdList.size() <= 10)
-                                    targetDistance = 1000000.0;
-                                loop:
+                                    targetDistance = 10000000000.0;
                                 for (final String pharmacyId : pharmacyIdList) {
                                     FirebaseDatabase mFirebaseDatabase;
                                     DatabaseReference mDatabaseReference;
                                     mFirebaseDatabase = FirebaseDatabase.getInstance();
                                     mDatabaseReference = mFirebaseDatabase.getReference().child("/pharmacy/" + pharmacyId);
-                                    mDatabaseReference.addValueEventListener(new ValueEventListener() {
+                                    ValueEventListener valueEventListenerChild = new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             Double lat = dataSnapshot.child("location").child("latitude").getValue(Double.class);
@@ -133,16 +137,19 @@ public class Utiltis {
                                                 String address = dataSnapshot.child("address").getValue(String.class);
                                                 String phone = dataSnapshot.child("phone").getValue(String.class);
                                                 //add in list
-                                                nearbyPharmacyList.add(new Pharmacy(name, lat, lng, dist, address, img, phone));
+                                                Pharmacy pharmacy = new Pharmacy(name, new Location(lat, lng), dist, address, img, phone);
+                                                if (!nearbyPharmacyList.contains(pharmacy))
+                                                    nearbyPharmacyList.add(pharmacy);
                                                 Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
                                                 if (pharmacyId == pharmacyIdList.get(pharmacyIdList.size() - 1)) {
                                                     if (nearbyPharmacyList.size() < 10 && pharmacyIdList.size() > 11) {
                                                         targetDistance *= 2;
-//                                                        return loop;
+                                                        searchMedicine(mContext, medID, listReturnValueResult);
                                                     } else {
                                                         //sort nearby list of pharmacy
                                                         getNearbyPharmacy();
                                                         listReturnValueResult.onResult(nearbyPharmacyList);
+                                                        targetDistance = 650.0;
                                                     }
                                                 }
                                             }
@@ -153,7 +160,10 @@ public class Utiltis {
                                         public void onCancelled(DatabaseError databaseError) {
 
                                         }
-                                    });
+                                    };
+                                    mDatabaseReference.addValueEventListener(valueEventListenerChild);
+                                    mDatabaseReferenceList.add(mDatabaseReference);
+                                    mValueEventListenerList.add(valueEventListenerChild);
 
 
                                 }
@@ -164,7 +174,10 @@ public class Utiltis {
                         public void onCancelled(DatabaseError databaseError) {
 
                         }
-                    });
+                    };
+                    mDatabaseReference.addValueEventListener(valueEventListener);
+                    mDatabaseReferenceList.add(mDatabaseReference);
+                    mValueEventListenerList.add(valueEventListener);
                 } else
                     Toast.makeText(mContext, mContext.getString(R.string.med_not_exist), Toast.LENGTH_SHORT).show();
             }
@@ -252,7 +265,7 @@ public class Utiltis {
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("medicine/" + medID);
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = (String) dataSnapshot.child("name").getValue();
@@ -265,7 +278,10 @@ public class Utiltis {
                 // Failed to read value
 //                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
             }
-        });
+        };
+        mDatabaseReference.addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
     }
 
 
@@ -275,7 +291,7 @@ public class Utiltis {
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
-        mDatabaseReference.orderByKey().equalTo(medID).addListenerForSingleValueEvent(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
@@ -290,7 +306,11 @@ public class Utiltis {
             public void onCancelled(DatabaseError databaseError) {
 //                Toast.makeText(mContext, "Faild To search", Toast.LENGTH_LONG).show();
             }
-        });
+        };
+        mDatabaseReference.orderByKey().equalTo(medID).addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
+
     }
 
 
@@ -325,7 +345,7 @@ public class Utiltis {
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
-        mDatabaseReference.orderByChild("name").equalTo(medName).addListenerForSingleValueEvent(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
@@ -339,7 +359,10 @@ public class Utiltis {
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(mContext, mContext.getString(R.string.error_search), Toast.LENGTH_LONG).show();
             }
-        });
+        };
+        mDatabaseReference.orderByChild("name").equalTo(medName).addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
 
     }
 
@@ -350,7 +373,7 @@ public class Utiltis {
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
@@ -359,7 +382,8 @@ public class Utiltis {
                     allSystemMedicineList = new ArrayList<Medicine>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Medicine medicine = new Medicine((String) child.child("name").getValue(), child.getKey());
-                        allSystemMedicineList.add(medicine);
+                        if (!allSystemMedicineList.contains(medicine))
+                            allSystemMedicineList.add(medicine);
                     }
                     allMedicineListWaitingOrderReturnVaule.onResult(allSystemMedicineList);
                     //TODO call into PH add, customer search
@@ -379,7 +403,10 @@ public class Utiltis {
             public void onCancelled(DatabaseError databaseError) {
                 Toast.makeText(mContext, mContext.getString(R.string.error_search), Toast.LENGTH_LONG).show();
             }
-        });
+        };
+        mDatabaseReference.addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
 
     }
 
@@ -390,7 +417,7 @@ public class Utiltis {
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID);
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mMedicineList = new ArrayList<>();
@@ -400,7 +427,8 @@ public class Utiltis {
                 final String phoneNumber = (String) dataSnapshot.child("phone").getValue();
                 final Double lat = dataSnapshot.child("latitude").getValue(Double.class);
                 final Double lng = dataSnapshot.child("longitude").getValue(Double.class);
-                currentPharmacy = new Pharmacy(name, lat, lng, 0.0, address, imgURL, phoneNumber);
+//                currentPharmacy=dataSnapshot.getValue(Pharmacy.class);
+                currentPharmacy = new Pharmacy(name, new Location(lat, lng), 0.0, address, imgURL, phoneNumber);
                 returnValueResult.onResult(currentPharmacy);
                 getPharmacyProfileMedicine(pharmacyID, medicineReturnValueResult);
             }
@@ -411,7 +439,11 @@ public class Utiltis {
             }
 
 
-        });
+        };
+        mDatabaseReference.addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
+
     }
 
 
@@ -567,7 +599,7 @@ public class Utiltis {
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference("pharmacy/" + pharmacyID + "/medicine");
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mMedicineList = new ArrayList<>();
@@ -582,7 +614,8 @@ public class Utiltis {
                     getMedicineInfo(medID, new ReturnValueResult<Medicine>() {
                         @Override
                         public void onResult(Medicine med) {
-                            mMedicineList.add(med);
+                            if (!mMedicineList.contains(med))
+                                mMedicineList.add(med);
                             if (medicine.get(medicine.size() - 1) == medID) {
                                 currentPharmacy.setMedicine(mMedicineList);
                                 medicineReturnValueResult.onResult(currentPharmacy);
@@ -598,7 +631,10 @@ public class Utiltis {
                 // Failed to read value
 //                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
             }
-        });
+        };
+        mDatabaseReference.addValueEventListener(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
     }
 
 
@@ -660,7 +696,9 @@ public class Utiltis {
     static public void pharmacistMenuOnSelect(Context mContext, int itemMenuID) {
         switch (itemMenuID) {
             case R.id.pharmacist_menu_profile:
-                mContext.startActivity(new Intent(mContext, PharmacyProfileActivity.class));
+                Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
+                intent.putExtra(mContext.getString(R.string.pharmacy_id), currentUser.getUid());
+                mContext.startActivity(intent);
                 break;
             case R.id.pharmacist_menu_edit_profile:
                 mContext.startActivity(new Intent(mContext, PharmacyEditProfile.class));
@@ -683,8 +721,19 @@ public class Utiltis {
                 mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case R.id.switch_mode_pharmacist:
-                setUpMyPreferenceMode(mContext, MODE_PHARMACIST);
+                //Todo: check if PH alrady sigend in ... then make switch case (login or Profile)
+                setUpMyPreferenceMode(mContext, MODE_PHARMACIST_NONE);
                 mContext.startActivity(new Intent(mContext, LogInActivity.class));
+                break;
+        }
+
+    }
+
+    static public void NonePharmacistMenuOnSelect(Context mContext, int itemMenuID) {
+        switch (itemMenuID) {
+            case R.id.pharmacist_menu_switch_mode:
+                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
+                ((Activity) mContext).finish();
                 break;
         }
 
@@ -709,8 +758,12 @@ public class Utiltis {
                 mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case MODE_PHARMACIST:
+                mContext.startActivity(new Intent(mContext, PharmacyProfileActivity.class));
+                break;
+            case MODE_PHARMACIST_NONE:
                 mContext.startActivity(new Intent(mContext, LogInActivity.class));
                 break;
+
         }
     }
     //End..
@@ -732,6 +785,9 @@ public class Utiltis {
                         break;
                     case MODE_PHARMACIST:
                         pharmacistMenuOnSelect(mContext, id);
+                        break;
+                    case MODE_PHARMACIST_NONE:
+                        NonePharmacistMenuOnSelect(mContext, id);
                         break;
                 }
                 drawer.closeDrawer(GravityCompat.START);
@@ -758,6 +814,9 @@ public class Utiltis {
                 break;
             case MODE_PHARMACIST:
                 navigationView.inflateMenu(R.menu.pharmacist_menu);
+                break;
+            case MODE_PHARMACIST_NONE:
+                navigationView.inflateMenu(R.menu.sign_in_menu);
                 break;
         }
 
@@ -792,6 +851,17 @@ public class Utiltis {
         ((Activity) mContext).finish();
     }
 
+
+
+    static public void removeEventListener() {
+        if (mDatabaseReferenceList != null && mValueEventListenerList != null)
+            if (mDatabaseReferenceList.size() == mValueEventListenerList.size())
+                for (int i = mDatabaseReferenceList.size() - 1; i >= 0; i--) {
+                    mDatabaseReferenceList.get(i).removeEventListener(mValueEventListenerList.get(i));
+                    mDatabaseReferenceList.remove(i);
+                    mValueEventListenerList.remove(i);
+                }
+    }
 
     static public <T> void removeDuplicatedItemsInList(List<T> mList) {
         // add elements to al, including duplicates
