@@ -11,11 +11,16 @@
         android:id="@+id/sign_up_continue_imag_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:drawableTop="@drawable/ic_menu_camera"
-        android:text="Pharmacy Image"
-        app:layout_constraintStart_toStartOf="@+id/sign_up_continue_phone_editText"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_phone_editText" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@android:color/transparent"
+        android:text="@string/upload_photo"
+        android:textAllCaps="false"
+        android:textColor="@color/gray_text"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_image_shower" />
 
     <EditText
         android:id="@+id/sign_up_continue_address_editText"
@@ -24,9 +29,10 @@
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
+        android:background="@drawable/edit_text"
         android:hint="Address"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
@@ -35,12 +41,13 @@
         android:layout_height="40dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edit_text"
         android:ems="10"
         android:hint="Pharmacy Phone"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_address_editText" />
 
     <TextView
@@ -57,52 +64,30 @@
     <ImageView
         android:id="@+id/sign_up_continue_image_shower"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/sign_up_continue_imag_btn"
-        app:layout_constraintTop_toTopOf="@+id/sign_up_continue_imag_btn"
-        app:srcCompat="@android:drawable/screen_background_light_transparent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="32dp" />
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/sign_up_continue_next_btn"
+        android:layout_height="157dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/photo_camera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_imag_btn"
-        app:srcCompat="@drawable/logo_small" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_phone_editText" />
 
     <Button
         android:id="@+id/sign_up_continue_next_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="next"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/roundedbutton"
+        android:text="@string/register"
+        android:textColor="@color/btn_color"
+        android:textSize="@dimen/btn_text_size"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp" />
-
-    <Button
-        android:id="@+id/sign_up_continue_skip_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="32dp"
-        android:text="skip"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="32dp" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_continue_imag_btn" />
+
 
 
 </android.support.constraint.ConstraintLayout>

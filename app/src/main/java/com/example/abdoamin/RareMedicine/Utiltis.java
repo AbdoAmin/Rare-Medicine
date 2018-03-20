@@ -43,7 +43,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,6 +60,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -108,7 +110,7 @@ public class Utiltis {
             @Override
             public void onResult(Boolean exist) {
                 if (exist) {
-                    nearbyPharmacyList = new ArrayList<Pharmacy>();
+                    nearbyPharmacyList = new ArrayList<>();
                     FirebaseDatabase mFirebaseDatabase;
                     DatabaseReference mDatabaseReference;
                     mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -117,7 +119,7 @@ public class Utiltis {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot.getValue() != null) {
-                                final List<String> pharmacyIdList = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
+                                final List<String> pharmacyIdList = new ArrayList<>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
                                 if (pharmacyIdList.size() <= 10)
                                     targetDistance = 10000000000.0;
                                 for (final String pharmacyId : pharmacyIdList) {
@@ -141,7 +143,7 @@ public class Utiltis {
                                                 if (!nearbyPharmacyList.contains(pharmacy))
                                                     nearbyPharmacyList.add(pharmacy);
                                                 Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
-                                                if (pharmacyId == pharmacyIdList.get(pharmacyIdList.size() - 1)) {
+                                                if (pharmacyId.equals(pharmacyIdList.get(pharmacyIdList.size() - 1))) {
                                                     if (nearbyPharmacyList.size() < 10 && pharmacyIdList.size() > 11) {
                                                         targetDistance *= 2;
                                                         searchMedicine(mContext, medID, listReturnValueResult);
@@ -246,7 +248,7 @@ public class Utiltis {
     //TODO: Set which Activity will start from ui
     //get result barcode from camera to Search Activity
     static public void barCodeResult(Context mContext, String code, String activity) {
-        Intent intent = null;
+        Intent intent;
         try {
             intent = new Intent(mContext, Class.forName("com.example.abdoamin.RareMedicine.activity." + activity));
             intent.putExtra("code", code);
@@ -320,7 +322,7 @@ public class Utiltis {
         isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
             public void onResult(Boolean object) {
-                if (!((Boolean) object)) {
+                if (!object) {
                     final HashMap<String, String> nameKey = new HashMap<String, String>() {{
                         put("name", name);
                     }};
@@ -350,7 +352,7 @@ public class Utiltis {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
                 if (dataSnapshot.getValue() != null) {
-                    mReturnValueResult.onResult(new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet()).get(0));
+                    mReturnValueResult.onResult(new ArrayList<>(((HashMap<String, String>) dataSnapshot.getValue()).keySet()).get(0));
                 } else
                     mReturnValueResult.onResult(null);
             }
@@ -379,7 +381,7 @@ public class Utiltis {
                 //check if found
                 if (dataSnapshot.getValue() != null) {
                     //creat list of medicine that will pass to recycleView Adpter
-                    allSystemMedicineList = new ArrayList<Medicine>();
+                    allSystemMedicineList = new ArrayList<>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         Medicine medicine = new Medicine((String) child.child("name").getValue(), child.getKey());
                         if (!allSystemMedicineList.contains(medicine))
@@ -460,7 +462,7 @@ public class Utiltis {
 
 
     //show all Pharmacy on map from pressing button in result activity
-    static public void showAllNearbyPharmacyOnMap(Context mContext, List<Pharmacy> pharmacyList, GoogleMap map) {
+    static public void showAllNearbyPharmacyOnMap(List<Pharmacy> pharmacyList, GoogleMap map) {
         Pharmacy theNearbyPharmacy = pharmacyList.get(0);
         LatLng theNearbyPharmcyLatLng = new LatLng(theNearbyPharmacy.getLatitude(), theNearbyPharmacy.getLongitude());
         map.addMarker(new MarkerOptions()
@@ -493,24 +495,36 @@ public class Utiltis {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(mContext, email, Toast.LENGTH_SHORT).show();
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("/pharmacy/" + task.getResult().getUser().getUid().toString());
-                    myRef.setValue(new HashMap<String, Object>() {
-                        {
-                            put("name", name);
-                            put("location", new HashMap<String, Double>() {
-                                {
-                                    put("latitude", latitude);
-                                    put("longitude", longitude);
+                    currentUser = task.getResult().getUser();
+                    currentUser.sendEmailVerification()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(mContext, "Please verify your email", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(mContext, email, Toast.LENGTH_SHORT).show();
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        DatabaseReference myRef = database.getReference("/pharmacy/" + currentUser.getUid());
+                                        myRef.setValue(new HashMap<String, Object>() {
+                                            {
+                                                put("name", name);
+                                                put("location", new HashMap<String, Double>() {
+                                                    {
+                                                        put("latitude", latitude);
+                                                        put("longitude", longitude);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                        Intent intent = new Intent(mContext, SignUpContinueActivity.class);
+                                        mContext.startActivity(intent);
+                                        ((Activity) mContext).finish();
+                                    } else {
+                                        Toast.makeText(mContext, "This Email Not Found", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
-                        }
-                    });
-                    Intent intent = new Intent(mContext, SignUpContinueActivity.class);
-                    intent.putExtra(mContext.getString(R.string.pharmacy_id), task.getResult().getUser().getUid().toString());
-                    mContext.startActivity(intent);
-                    ((Activity) mContext).finish();
+
                 } else {
                     Toast.makeText(mContext, "This Email Already Exist.", Toast.LENGTH_SHORT).show();
                 }
@@ -541,7 +555,6 @@ public class Utiltis {
 
                 });
                 Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
-                intent.putExtra(mContext.getString(R.string.pharmacy_id), userID);
                 mContext.startActivity(intent);
                 ((Activity) mContext).finish();
             }
@@ -572,7 +585,6 @@ public class Utiltis {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 currentUser = task.getResult().getUser();
                 Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
-                intent.putExtra(mContext.getString(R.string.pharmacy_id), currentUser.getUid());
                 mContext.startActivity(intent);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -609,14 +621,14 @@ public class Utiltis {
                     return;
                 }
 
-                final List<String> medicine = new ArrayList<String>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
+                final List<String> medicine = new ArrayList<>(((HashMap<String, String>) dataSnapshot.getValue()).keySet());
                 for (final String medID : medicine) {
                     getMedicineInfo(medID, new ReturnValueResult<Medicine>() {
                         @Override
                         public void onResult(Medicine med) {
                             if (!mMedicineList.contains(med))
                                 mMedicineList.add(med);
-                            if (medicine.get(medicine.size() - 1) == medID) {
+                            if (medicine.get(medicine.size() - 1).equals(medID)) {
                                 currentPharmacy.setMedicine(mMedicineList);
                                 medicineReturnValueResult.onResult(currentPharmacy);
                             }
@@ -697,14 +709,15 @@ public class Utiltis {
         switch (itemMenuID) {
             case R.id.pharmacist_menu_profile:
                 Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
-                intent.putExtra(mContext.getString(R.string.pharmacy_id), currentUser.getUid());
                 mContext.startActivity(intent);
                 break;
             case R.id.pharmacist_menu_edit_profile:
                 mContext.startActivity(new Intent(mContext, PharmacyEditProfile.class));
                 break;
             case R.id.pharmacist_menu_log_out:
-                //todo logout
+                mAuth.signOut();
+                mContext.startActivity(new Intent(mContext, LogInActivity.class));
+                ((Activity) mContext).finish();
                 break;
             case R.id.pharmacist_menu_switch_mode:
                 mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
@@ -714,16 +727,18 @@ public class Utiltis {
 
     }
 
-    static public void NoneMenuOnSelect(Context mContext, int itemMenuID) {
-        switch (itemMenuID) {
-            case R.id.switch_mode_user:
+    static public void noneModeSelect(Context mContext, String mode) {
+        switch (mode) {
+            case "user":
                 setUpMyPreferenceMode(mContext, MODE_USER);
                 mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
+                ((Activity) mContext).finish();
                 break;
-            case R.id.switch_mode_pharmacist:
+            case "pharmacist":
                 //Todo: check if PH alrady sigend in ... then make switch case (login or Profile)
                 setUpMyPreferenceMode(mContext, MODE_PHARMACIST_NONE);
                 mContext.startActivity(new Intent(mContext, LogInActivity.class));
+                ((Activity) mContext).finish();
                 break;
         }
 
@@ -771,15 +786,11 @@ public class Utiltis {
 
     static public void setUpMenuNavView(final Context mContext, Toolbar toolbar, final DrawerLayout drawer, NavigationView navigationView, final String menueType) {
         NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
-            @SuppressWarnings("StatementWithEmptyBody")
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 // Handle navigation view item clicks here.
                 int id = item.getItemId();
                 switch (menueType) {
-                    case MODE_NONE:
-                        NoneMenuOnSelect(mContext, id);
-                        break;
                     case MODE_USER:
                         userMenuOnSelect(mContext, id);
                         break;
@@ -806,9 +817,6 @@ public class Utiltis {
         navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
         switch (menueType) {
-            case MODE_NONE:
-                navigationView.inflateMenu(R.menu.activity_mode_switch_drawer);
-                break;
             case MODE_USER:
                 navigationView.inflateMenu(R.menu.user_menu);
                 break;
@@ -851,6 +859,45 @@ public class Utiltis {
         ((Activity) mContext).finish();
     }
 
+    static public boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+
+    //request medicine
+    //todo:accept request function implementation
+    //todo:refuse request function implementation
+    static public void sendRequestAddNewMedicine(final Context mContext, final String medID, final String name){
+        isMedicineExist(medID, new ReturnValueResult<Boolean>() {
+            @Override
+            public void onResult(Boolean object) {
+                if (!object) {
+                    final HashMap<String, String> nameKey = new HashMap<String, String>() {{
+                        put("name", name);
+                    }};
+                    FirebaseDatabase mFirebaseDatabase;
+                    DatabaseReference mDatabaseReference;
+                    mFirebaseDatabase = FirebaseDatabase.getInstance();
+                    mDatabaseReference = mFirebaseDatabase.getReference("request_medicine/");
+                    mDatabaseReference.child(medID).setValue(nameKey).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                                Toast.makeText(mContext, mContext.getString(R.string.successful_request), Toast.LENGTH_LONG).show();
+                            else
+                                Toast.makeText(mContext, mContext.getString(R.string.failed_request), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                } else {
+                    Toast.makeText(mContext, mContext.getString(R.string.med_exist), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
 
     static public void removeEventListener() {
@@ -865,7 +912,7 @@ public class Utiltis {
 
     static public <T> void removeDuplicatedItemsInList(List<T> mList) {
         // add elements to al, including duplicates
-        Set<T> hs = new HashSet<T>();
+        Set<T> hs = new HashSet<>();
         hs.addAll(mList);
         mList.clear();
         mList.addAll(hs);
@@ -873,6 +920,6 @@ public class Utiltis {
 
     //this interface act between function and caller to get a return value form background thread
     public interface ReturnValueResult<T> {
-        public void onResult(T object);
+        void onResult(T object);
     }
 }

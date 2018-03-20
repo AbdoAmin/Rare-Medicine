@@ -31,10 +31,6 @@ public class SignUpContinueActivity extends AppCompatActivity {
     EditText phoneNumber;
     @BindView(R.id.sign_up_continue_image_shower)
     ImageView imageShow;
-    @BindView(R.id.sign_up_continue_next_btn)
-    Button nextBtn;
-    @BindView(R.id.sign_up_continue_skip_btn)
-    Button skipBtn;
 
     String userID;
     Uri imageUri;
@@ -44,19 +40,14 @@ public class SignUpContinueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_continue);
         ButterKnife.bind(this);
-        userID=getIntent().getStringExtra(getString(R.string.pharmacy_id));
+        userID=Utiltis.currentUser.getUid();
     }
-
     @OnClick(R.id.sign_up_continue_imag_btn)
     void onImagePickerClick() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
 
-    }
-    @OnClick(R.id.sign_up_continue_skip_btn)
-    void onSkipBtnClick(){
-        Utiltis.pharmacySignUpContinue(this,userID,null,null,null);
     }
     @OnClick(R.id.sign_up_continue_next_btn)
     void onNextBtnClick(){

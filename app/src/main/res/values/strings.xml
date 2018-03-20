@@ -5,6 +5,8 @@
     <string name="error_search">Faild To search</string>
     <string name="no_med_in_firebase">No Medicine Available now</string>
     <string name="title_activity_mode_switch">ModeSwitch</string>
+    <string name="successful_request">Request sent successfully</string>
+    <string name="failed_request">Failed to send Request</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -17,12 +19,20 @@
     <string name="name_map" translatable="false">name</string>
     <string name="email_login">Email</string>
     <string name="password_login">Password</string>
-    <string name="login">log in</string>
-    <string name="signup_open_activity">sign up</string>
+    <string name="login">login</string>
+    <string name="register">Register</string>
+    <string name="forget_password">Forget password?</string>
     <string name="activity_name" translatable="false">activity</string>
     <string name="splash_screen">Splash screen</string>
-    <string name="pharmacy_id" translatable="false">pharmacyID</string>
     <string name="pharmacy_position" translatable="false">position</string>
     <string name="CURRENT_MODE" translatable="false">Current Application User Mode</string>
+    <string name="next">Next</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="pharmacist">Pharmacist</string>
+    <string name="search_medicine">Search medicine</string>
+    <string name="verify">Verify your email.</string>
+    <string name="resend_verification">Resend verification</string>
+    <string name="logout">Log out</string>
+
 
 </resources>

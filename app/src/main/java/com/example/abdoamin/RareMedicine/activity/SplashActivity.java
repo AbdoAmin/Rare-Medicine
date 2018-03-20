@@ -25,10 +25,10 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         Utiltis.getCurrentUserLocation(this);
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            Toast.makeText(this, auth.getUid(), Toast.LENGTH_LONG).show();
-            Log.e("^_^:Abdo:",auth.getUid());
+        Utiltis.mAuth = FirebaseAuth.getInstance();
+        if (Utiltis.mAuth .getCurrentUser() != null) {
+            Toast.makeText(this, Utiltis.mAuth .getUid(), Toast.LENGTH_LONG).show();
+            Log.e("^_^:Abdo:",Utiltis.mAuth .getUid());
         }
         else {
             Toast.makeText(this, "No", Toast.LENGTH_LONG).show();

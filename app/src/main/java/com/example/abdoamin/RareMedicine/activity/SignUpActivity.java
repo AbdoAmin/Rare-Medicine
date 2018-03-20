@@ -1,7 +1,10 @@
 package com.example.abdoamin.RareMedicine.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -9,6 +12,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,27 +45,28 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
     @BindView(R.id.sign_up_email_editText)
     EditText email;
     @BindView(R.id.sign_up_password_editText)
-    EditText password;
+    ShowHidePasswordEditText password;
     @BindView(R.id.sign_up_confirm_password_editText)
-    EditText confirmedPassword;
+    ShowHidePasswordEditText confirmedPassword;
     @BindView(R.id.sign_up_pharmacy_name_editText)
     EditText name;
 
-    //menu
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+//    //menu
+//    @BindView(R.id.drawer_layout)
+//    DrawerLayout drawer;
+//    @BindView(R.id.nav_view)
+//    NavigationView navigationView;
+//    @BindView(R.id.toolbar)
+//    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.menu_activity_sign_up);
+        setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+        setColorEditTextShowPasswordIcon();
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST_NONE);
+//        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST_NONE);
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -70,7 +80,6 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-    @OnClick(R.id.sign_up_sign_up_btn)
     void onSignUpBtnClick() {
         if(email.getText().toString().length()<3){
             Toast.makeText(this, "Check Email Address", Toast.LENGTH_SHORT).show();
@@ -139,4 +148,42 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.sign_up_next, menu);
+        MenuItem nextMenu = menu.findItem(R.id.sign_up_next_menu);
+        Button nextMenuActionView =
+                (Button) nextMenu.getActionView();
+        Drawable icon= this.getResources().getDrawable( R.drawable.ic_keyboard_arrow_right_white_24dp);
+        nextMenuActionView.setCompoundDrawablesWithIntrinsicBounds(null , null, icon, null );
+        nextMenuActionView.setBackgroundColor(Color.TRANSPARENT);
+        nextMenuActionView.setText(R.string.next);
+        nextMenuActionView.setPadding(80,0,40,0);
+        nextMenuActionView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSignUpBtnClick();
+            }
+        });
+
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.sign_up_next_menu:
+                onSignUpBtnClick();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    void setColorEditTextShowPasswordIcon(){
+        password.setTintColor(getResources().getColor(R.color.colorPrimary));
+        confirmedPassword.setTintColor(getResources().getColor(R.color.colorPrimary));
+    }
+
 }
