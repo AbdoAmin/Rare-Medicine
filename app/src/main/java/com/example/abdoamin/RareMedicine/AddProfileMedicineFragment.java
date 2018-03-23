@@ -81,8 +81,7 @@ public class AddProfileMedicineFragment extends Fragment {
     }
 
     public static AddProfileMedicineFragment newInstance() {
-        AddProfileMedicineFragment fragment = new AddProfileMedicineFragment();
-        return fragment;
+        return new AddProfileMedicineFragment();
     }
 
     public void prepareToAdd() {
@@ -126,5 +125,6 @@ public class AddProfileMedicineFragment extends Fragment {
         mUnbinder.unbind();
         Log.e("^_^:ABDO:^_&:" + TAG, "onDestroyView");
     }
+
 
 }

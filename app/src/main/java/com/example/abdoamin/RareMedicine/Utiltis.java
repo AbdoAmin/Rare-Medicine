@@ -392,9 +392,9 @@ public class Utiltis {
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
                     mMedicineRecycleAdapter.addList(allSystemMedicineList);
                     mRecyclerView.setAdapter(mMedicineRecycleAdapter);
-                    mRecyclerView.setHasFixedSize(true);
-                    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                    mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
+//                    mRecyclerView.setHasFixedSize(true);
+//                    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//                    mRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
 
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.no_med_in_firebase), Toast.LENGTH_LONG).show();
@@ -870,7 +870,7 @@ public class Utiltis {
     //request medicine
     //todo:accept request function implementation
     //todo:refuse request function implementation
-    static public void sendRequestAddNewMedicine(final Context mContext, final String medID, final String name){
+    static public void sendRequestAddNewMedicine(final Context mContext, final String medID, final String name) {
         isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
             public void onResult(Boolean object) {
@@ -885,7 +885,7 @@ public class Utiltis {
                     mDatabaseReference.child(medID).setValue(nameKey).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
+                            if (task.isSuccessful())
                                 Toast.makeText(mContext, mContext.getString(R.string.successful_request), Toast.LENGTH_LONG).show();
                             else
                                 Toast.makeText(mContext, mContext.getString(R.string.failed_request), Toast.LENGTH_LONG).show();
@@ -899,6 +899,37 @@ public class Utiltis {
         });
     }
 
+    static public void acceptRequestAddNewMedicine(Context mContext, String medID, String name) {
+        addNewMedicine(mContext, medID, name);
+    }
+
+    static public void refuseRequestAddNewMedicine(final Context mContext, final String medID) {
+        FirebaseDatabase mFirebaseDatabase;
+        DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("request_medicine/");
+        mDatabaseReference.child(medID).setValue(null).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful())
+                    Toast.makeText(mContext, mContext.getString(R.string.successful_request), Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(mContext, mContext.getString(R.string.failed_request), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+    static public Boolean searchAboutAllCharacter(String searchedText, String object) {
+        searchedText = searchedText.toLowerCase();
+        object = object.toLowerCase();
+        for (int index = 0; index < searchedText.length(); index++) {
+            if (!object.contains(String.valueOf(searchedText.charAt(index)))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     static public void removeEventListener() {
         if (mDatabaseReferenceList != null && mValueEventListenerList != null)

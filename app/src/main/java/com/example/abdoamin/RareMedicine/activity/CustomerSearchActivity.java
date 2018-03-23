@@ -47,6 +47,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
 
     MedicineRecycleAdapter mMedicineRecycleAdapter;
     ArrayList<Medicine> medicineArrayList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +83,9 @@ public class CustomerSearchActivity extends AppCompatActivity {
     void textChange() {
         medicineArrayList.clear();
         for (Medicine medicine : Utiltis.allSystemMedicineList) {
-            if (medicine.getName().contains(searchEditText.getText().toString()) ||
+//            if (medicine.getName().contains(searchEditText.getText().toString()) ||
+//                    medicine.getMedID().contains(searchEditText.getText().toString()))
+            if (Utiltis.searchAboutAllCharacter(searchEditText.getText().toString(), medicine.getName()) ||
                     medicine.getMedID().contains(searchEditText.getText().toString()))
                 medicineArrayList.add(medicine);
         }
@@ -113,10 +116,11 @@ public class CustomerSearchActivity extends AppCompatActivity {
     }
 
     NetworkChangeReceiver receiver;
+
     @Override
     protected void onResume() {
         super.onResume();
-        receiver=new NetworkChangeReceiver();
+        receiver = new NetworkChangeReceiver();
         registerReceiver(
                 receiver,
                 new IntentFilter(

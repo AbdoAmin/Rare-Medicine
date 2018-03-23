@@ -6,34 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.abdoamin.RareMedicine.activity.CustomerSearchActivity">
 
-    <Button
-        android:id="@+id/customer_search_barcode_btn"
-        android:layout_width="229dp"
-        android:layout_height="119dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:drawableTop="@drawable/ic_menu_camera"
-        android:text="shearch by barcod"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
-
-    <EditText
-        android:id="@+id/customer_search_search_editText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="Search By Medicine Name"
-        app:layout_constraintEnd_toStartOf="@+id/customer_search_search_btn"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customer_search_barcode_btn"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="16dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/customer_search_medicine_list_recycleView"
@@ -43,31 +15,58 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/customer_search_search_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/relativ" />
 
-    <ImageButton
-        android:id="@+id/customer_search_search_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/customer_search_search_editText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="?android:attr/actionModeWebSearchDrawable"
-        android:layout_marginRight="16dp" />
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="90dp"
-        android:layout_height="85dp"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mariosmall" />
+        app:srcCompat="@drawable/logo_small" />
+
+    <RelativeLayout
+        android:id="@+id/relativ"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5">
+
+        <EditText
+            android:id="@+id/customer_search_search_editText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edit_text"
+            android:hint="Search By Medicine Name"
+            android:paddingRight="50dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/customer_search_barcode_btn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/customer_search_search_editText"
+            android:layout_alignRight="@+id/customer_search_search_editText"
+            android:layout_alignTop="@+id/customer_search_search_editText"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_menu_camera" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

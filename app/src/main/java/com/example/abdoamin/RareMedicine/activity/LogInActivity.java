@@ -59,7 +59,7 @@ public class LogInActivity extends AppCompatActivity {
         Utiltis.currentUser=Utiltis.mAuth.getCurrentUser();
         if (Utiltis.currentUser != null) {
             Intent intent = new Intent(this, PharmacyProfileActivity.class);
-            intent.putExtra(getString(R.string.pharmacy_id), Utiltis.currentUser.getUid());
+
             startActivity(intent);
             finish();
         }
