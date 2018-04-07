@@ -104,7 +104,7 @@ public class AddProfileMedicineFragment extends Fragment {
 
             }
         });
-        Utiltis.getAllMedicineInList(getActivity(), mMedicineRecycleView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
+        Utiltis.getAllMedicineInList(getActivity(),searchEditText,PharmacyAddMedicineActivity.code, mMedicineRecycleView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
             @Override
             public void onResult(List<Medicine> object) {
                 Utiltis.allSystemMedicineList.removeAll(Utiltis.mMedicineList);

@@ -26,25 +26,14 @@
     <Button
         android:id="@+id/pharmacy_profile_medicine_modify_btn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="modify medicine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-    <!--<Button-->
-        <!--android:id="@+id/delete_medicine_btn"-->
-        <!--android:layout_width="150dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Add"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="@+id/medicine_recycleView"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/medicine_recycleView"-->
-        <!--android:layout_marginLeft="8dp" />-->
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="40dp" />
+
 
 </android.support.constraint.ConstraintLayout>

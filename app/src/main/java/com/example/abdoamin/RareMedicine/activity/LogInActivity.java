@@ -48,7 +48,7 @@ public class LogInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setColorEditTextShowPasswordIcon();
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST_NONE);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
 
         //image background animation color
         imageView = (ImageView)findViewById(R.id.imageView3);
@@ -58,8 +58,9 @@ public class LogInActivity extends AppCompatActivity {
 
         Utiltis.currentUser=Utiltis.mAuth.getCurrentUser();
         if (Utiltis.currentUser != null) {
+            Utiltis.currentMode=Utiltis.MODE_PHARMACIST;
+            Utiltis.setUpMyPreferenceMode(this, Utiltis.MODE_PHARMACIST);
             Intent intent = new Intent(this, PharmacyProfileActivity.class);
-
             startActivity(intent);
             finish();
         }

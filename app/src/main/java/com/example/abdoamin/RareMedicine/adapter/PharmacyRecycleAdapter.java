@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.abdoamin.RareMedicine.R;
+import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 import com.squareup.picasso.Picasso;
 
@@ -86,7 +87,7 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
         void bind(int position) {
             name.setText(getPharmacy(position).getName());
             address.setText(getPharmacy(position).getAddress());
-            distance.setText(String.valueOf(getPharmacy(position).getDistance()));
+            distance.setText(Utiltis.mileToKmMeterToStringFormat(getPharmacy(position).getDistance()));
             Picasso.with(mContext).load(Uri.parse(getPharmacy(position).getImg())).into(photo);
         }
 

@@ -50,23 +50,24 @@
         <EditText
             android:id="@+id/customer_search_search_editText"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/edit_text_height"
             android:background="@drawable/edit_text"
-            android:hint="Search By Medicine Name"
-            android:paddingRight="50dp"
+            android:hint="@string/search_by_medicine_name"
+            android:paddingRight="40dp"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
             android:id="@+id/customer_search_barcode_btn"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/customer_search_search_editText"
             android:layout_alignRight="@+id/customer_search_search_editText"
             android:layout_alignTop="@+id/customer_search_search_editText"
             android:background="@android:color/transparent"
             android:tint="@color/colorPrimary"
-            app:srcCompat="@drawable/ic_menu_camera" />
+            app:srcCompat="@drawable/ic_menu_camera"
+            android:contentDescription="@string/barcode_icon" />
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

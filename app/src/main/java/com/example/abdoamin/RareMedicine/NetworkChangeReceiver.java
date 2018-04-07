@@ -48,6 +48,4 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
         isConnected = false;
         return false;
     }
-
-
 }

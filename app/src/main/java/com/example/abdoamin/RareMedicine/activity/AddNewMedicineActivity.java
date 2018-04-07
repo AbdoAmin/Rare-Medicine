@@ -17,10 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AddNewMedicineActivity extends AppCompatActivity {
-    @BindView(R.id.add_medicine_activity_add_medicine_btn)
-    public Button addMedicineBtn;
-    @BindView(R.id.add_medicine_activity_barcode_btn)
-    public Button barCodeBtn;
     @BindView(R.id.add_medicine_activity_medicine_id_editText)
     public EditText medicineIdEditText;
     @BindView(R.id.add_medicine_activity_medicine_name_editText)
@@ -38,7 +34,7 @@ public class AddNewMedicineActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_add_new_medicine);
         ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
 
         String barCodeResult = getIntent().getStringExtra("code");
         if (barCodeResult != null) {
@@ -51,7 +47,7 @@ public class AddNewMedicineActivity extends AppCompatActivity {
     void addMedicineOnClick() {
         String medicineId = medicineIdEditText.getText().toString();
         String medicineName = medicineNameEditText.getText().toString();
-        if (medicineId != null && medicineName != null) {
+        if (!medicineId.equals("") && !medicineName.equals("")) {
             Utiltis.addNewMedicine(this, medicineId, medicineName);
         }
 

@@ -36,7 +36,7 @@ public class SearchMedicineResultActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_search_medicine_result);
         ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_USER);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
         PharmacyRecycleAdapter mPharmacyRecycleAdapter = new PharmacyRecycleAdapter(Utiltis.nearbyPharmacyList, this, new PharmacyRecycleAdapter.PharmacyClickListener() {
             @Override
             public void onPharmacyClick(int position) {

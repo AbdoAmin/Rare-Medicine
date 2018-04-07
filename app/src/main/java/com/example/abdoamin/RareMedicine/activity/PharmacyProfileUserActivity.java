@@ -52,7 +52,7 @@ public class PharmacyProfileUserActivity extends AppCompatActivity implements On
         ButterKnife.bind(this);
 
         //menu
-        Utiltis.setUpMenuNavView(this,toolbar,drawer,navigationView,Utiltis.MODE_USER);
+        Utiltis.setUpMenuNavView(this,toolbar,drawer,navigationView,Utiltis.currentMode);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.pharmacy_profile_user_map);

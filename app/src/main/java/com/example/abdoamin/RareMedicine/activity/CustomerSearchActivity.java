@@ -33,10 +33,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     @BindView(R.id.customer_search_search_editText)
     EditText searchEditText;
-    @BindView(R.id.customer_search_search_btn)
-    ImageButton searchBtn;
-    @BindView(R.id.customer_search_barcode_btn)
-    Button barcodeBtn;
+
     //menu
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -53,14 +50,12 @@ public class CustomerSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_activity_customer_search);
         ButterKnife.bind(this);
+        String barCodeResult = getIntent().getStringExtra("code");
+
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_USER);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
 
         medicineArrayList = new ArrayList<>();
-        String barCodeResult = getIntent().getStringExtra("code");
-        if (barCodeResult != null) {
-            searchMedicineByID(barCodeResult);
-        }
         if (Utiltis.allSystemMedicineList == null)
             Utiltis.allSystemMedicineList = new ArrayList<>();
         mMedicineRecycleAdapter = new MedicineRecycleAdapter(this, Utiltis.allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
@@ -69,14 +64,12 @@ public class CustomerSearchActivity extends AppCompatActivity {
                 searchMedicineByID(medicine.getMedID());
             }
         });
-        Utiltis.getAllMedicineInList(this, mRecyclerView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
+        Utiltis.getAllMedicineInList(this,searchEditText,barCodeResult, mRecyclerView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
             @Override
             public void onResult(List<Medicine> object) {
 
             }
         });
-
-
     }
 
     @OnTextChanged(R.id.customer_search_search_editText)
@@ -89,7 +82,7 @@ public class CustomerSearchActivity extends AppCompatActivity {
                     medicine.getMedID().contains(searchEditText.getText().toString()))
                 medicineArrayList.add(medicine);
         }
-        if (searchEditText.getText().toString().trim() == null)
+        if (searchEditText.getText().toString().trim().equals(""))
             mMedicineRecycleAdapter.addList(Utiltis.allSystemMedicineList);
         else
             mMedicineRecycleAdapter.addList(medicineArrayList);

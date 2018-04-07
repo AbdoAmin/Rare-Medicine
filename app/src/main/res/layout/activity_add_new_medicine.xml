@@ -6,82 +6,94 @@
     android:layout_height="match_parent"
     tools:context="com.example.abdoamin.RareMedicine.activity.AddNewMedicineActivity">
 
-
-    <Button
-        android:id="@+id/add_medicine_activity_barcode_btn"
-        android:layout_width="229dp"
-        android:layout_height="119dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:drawableTop="@drawable/ic_menu_camera"
-        android:text="ID by barcod"
-        app:layout_constraintBottom_toTopOf="@+id/add_medicine_activity_medicine_id_editText"
+    <RelativeLayout
+        android:id="@+id/relativ"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <EditText
+            android:id="@+id/add_medicine_activity_medicine_id_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:background="@drawable/edit_text"
+            android:hint="Medicine Bar Code ID"
+            android:paddingRight="40dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/add_medicine_activity_barcode_btn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/add_medicine_activity_medicine_id_editText"
+            android:layout_alignRight="@+id/add_medicine_activity_medicine_id_editText"
+            android:layout_alignTop="@+id/add_medicine_activity_medicine_id_editText"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/barcode_icon"
+            android:tint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_menu_camera" />
+    </RelativeLayout>
+
 
     <EditText
         android:id="@+id/add_medicine_activity_medicine_name_editText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="@dimen/edit_text_height"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:hint="Medicine Name"
-        app:layout_constraintBottom_toTopOf="@+id/add_medicine_activity_add_medicine_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.166"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/add_medicine_activity_medicine_id_editText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
-        android:hint="Medicine ID"
-        app:layout_constraintBottom_toTopOf="@+id/add_medicine_activity_medicine_name_editText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativ" />
 
     <Button
         android:id="@+id/add_medicine_activity_add_medicine_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="157dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/roundedbutton"
         android:text="Add medicine"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/btn_color"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_medicine_activity_medicine_name_editText" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:text="Note: this make request to admin to aprove"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/add_medicine_activity_barcode_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mariosmall" />
+        app:srcCompat="@drawable/logo_small" />
 
 
 </android.support.constraint.ConstraintLayout>

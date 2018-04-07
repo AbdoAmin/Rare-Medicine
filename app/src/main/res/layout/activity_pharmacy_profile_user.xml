@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/include"
-        layout="@layout/profile_main"/>
+        layout="@layout/profile_main" />
 
     <fragment
         android:id="@+id/pharmacy_profile_user_map"

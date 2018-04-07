@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Rare Medicine</string>
     <string name="med_exist">This medicine is already exist</string>
+    <string name="med_add_success">This medicine was successfully added </string>
     <string name="med_not_exist">This medicine isn\'t exist in our system</string>
     <string name="error_search">Faild To search</string>
     <string name="no_med_in_firebase">No Medicine Available now</string>
@@ -33,6 +34,17 @@
     <string name="verify">Verify your email.</string>
     <string name="resend_verification">Resend verification</string>
     <string name="logout">Log out</string>
+    <string name="default_image_profile" translatable="false"><![CDATA[https://firebasestorage.googleapis.com/v0/b/rare-medicine.appspot.com/o/pharmacyProfile%2Flogonew.png?alt=media&token=bdce162d-fffc-42a7-baaa-dffb401cb2dc]]></string>
+    <string name="pharmacy_name">Pharmacy Name<font color="#ff0000">*</font></string>
+    <string name="address">Address</string>
+    <string name="pharmacy_phone">Pharmacy Phone</string>
+    <string name="mark_your_pharmacy_postion_on_map">Mark Your Pharmacy Position On Map<font color="#ff0000">*</font></string>
+    <string name="optional_data">Optional Data:</string>
+    <string name="confirm_password">Confirm Password<font color="#ff0000">*</font></string>
+    <string name="password">Password<font color="#ff0000">*</font></string>
+    <string name="email">Email<font color="#ff0000">*</font></string>
+    <string name="barcode_icon">barcode icon</string>
+    <string name="search_by_medicine_name">Search By Medicine Name</string>
 
 
 </resources>

@@ -98,7 +98,8 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
             return;
         }
         if (confirmedPassword.getText().toString().equals(password.getText().toString())) {
-            Utiltis.pharmacySignUp(this, email.getText().toString(), password.getText().toString(), name.getText().toString(), pharmacyLocation.latitude, pharmacyLocation.longitude);
+            Utiltis.pharmacySignUp(this, email.getText().toString(), password.getText().toString()
+                    , name.getText().toString(), pharmacyLocation.latitude, pharmacyLocation.longitude);
         }
         else{
             Toast.makeText(this, "This Password doesn't match", Toast.LENGTH_SHORT).show();

@@ -25,10 +25,10 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
 
     private List<Medicine> medicineList;
     private MedicineClickListener mMedicineClickListener;
-    Context mContext;
+    private Context mContext;
 
     public MedicineRecycleAdapter(Context context, List<Medicine> medicines, MedicineClickListener medicineClickListener) {
-        this.medicineList = new ArrayList<Medicine>();
+        this.medicineList = new ArrayList<>();
         medicineList.addAll(medicines);
         mMedicineClickListener = medicineClickListener;
         this.mContext = context;
@@ -68,8 +68,6 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.adapter_medicine_item_medicine_name)
         TextView medicineName;
-        @BindView(R.id.adapter_medicine_item_medicine_id)
-        TextView medicineId;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,7 +76,6 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
 
         void bind(int position) {
             medicineName.setText(getMedicine(position).getName());
-            medicineId.setText(getMedicine(position).getMedID());
         }
 
 

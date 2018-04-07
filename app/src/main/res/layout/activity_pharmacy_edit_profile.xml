@@ -1,106 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.abdoamin.RareMedicine.activity.PharmacyEditProfile">
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/pharmacy_edit_profile_imag_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:drawableTop="@drawable/ic_menu_camera"
-        android:text="Pharmacy Image"
-        app:layout_constraintStart_toStartOf="@+id/pharmacy_edit_profile_phone_editText"
-        app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_phone_editText" />
+        <Button
+            android:id="@+id/pharmacy_edit_profile_imag_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/upload_photo"
+            android:textAllCaps="false"
+            android:textColor="@color/gray_text"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_image_shower" />
 
-    <EditText
-        android:id="@+id/pharmacy_edit_profile_pharmacy_name_editText"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="24dp"
-        android:hint="Pharmacy Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/pharmacy_edit_profile_pharmacy_name_editText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/pharmacy_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/pharmacy_edit_profile_address_editText"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:hint="Address"
-        app:layout_constraintEnd_toEndOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
-        app:layout_constraintStart_toStartOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
-        app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_pharmacy_name_editText" />
+        <EditText
+            android:id="@+id/pharmacy_edit_profile_address_editText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/address"
+            app:layout_constraintEnd_toEndOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
+            app:layout_constraintStart_toStartOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
+            app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_pharmacy_name_editText" />
 
-    <EditText
-        android:id="@+id/pharmacy_edit_profile_phone_editText"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Pharmacy Phone"
-        android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
-        app:layout_constraintStart_toStartOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
-        app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_address_editText" />
+        <EditText
+            android:id="@+id/pharmacy_edit_profile_phone_editText"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="@string/pharmacy_phone"
+            android:inputType="phone"
+            app:layout_constraintEnd_toEndOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
+            app:layout_constraintStart_toStartOf="@+id/pharmacy_edit_profile_pharmacy_name_editText"
+            app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_address_editText" />
 
-    <ImageView
-        android:id="@+id/pharmacy_edit_profile_image_shower"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/pharmacy_edit_profile_map_fragment"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pharmacy_edit_profile_imag_btn"
-        app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_phone_editText"
-        app:srcCompat="@android:drawable/screen_background_light_transparent"
-        android:layout_marginRight="32dp"
-        android:layout_marginLeft="8dp" />
 
-    <Button
-        android:id="@+id/pharmacy_edit_profile_next_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="32dp"
-        android:text="next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginRight="32dp" />
+        <ImageView
+            android:id="@+id/pharmacy_edit_profile_image_shower"
+            android:layout_width="0dp"
+            android:layout_height="157dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/photo_camera"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_phone_editText" />
 
-    <Button
-        android:id="@+id/pharmacy_edit_profile_cancel_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="32dp"
-        android:text="cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="32dp" />
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/mark_your_pharmacy_postion_on_map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_imag_btn" />
 
-    <fragment
-        android:id="@+id/pharmacy_edit_profile_map_fragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+        <fragment
+            android:id="@+id/pharmacy_edit_profile_map_fragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
 
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/pharmacy_edit_profile_next_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pharmacy_edit_profile_imag_btn" />
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+    </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</ScrollView>

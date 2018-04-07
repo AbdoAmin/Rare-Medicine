@@ -7,30 +7,41 @@
     android:descendantFocusability="beforeDescendants"
     >
 
-    <Button
-        android:id="@+id/fragment_modify_medicine_barcode_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:drawableTop="@drawable/ic_menu_camera"
-        android:text="shearch by barcod"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/fragment_modify_medicine_search_editText"
+    <RelativeLayout
+        android:id="@+id/relativ"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:hint="Search Medicine In List"
+        android:layout_height="50dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_modify_medicine_barcode_btn" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/fragment_modify_medicine_search_editText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:background="@drawable/edit_text"
+            android:hint="@string/search_by_medicine_name"
+            android:paddingRight="40dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:inputType="text" />
+
+        <ImageButton
+            android:id="@+id/fragment_modify_medicine_barcode_btn"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fragment_modify_medicine_search_editText"
+            android:layout_alignRight="@+id/fragment_modify_medicine_search_editText"
+            android:layout_alignTop="@+id/fragment_modify_medicine_search_editText"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorPrimary"
+            app:srcCompat="@drawable/ic_menu_camera"
+            android:contentDescription="@string/barcode_icon" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_modify_medicine_medicine_recycleView"
@@ -39,9 +50,10 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_modify_medicine_search_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/relativ" />
 
 </android.support.constraint.ConstraintLayout>

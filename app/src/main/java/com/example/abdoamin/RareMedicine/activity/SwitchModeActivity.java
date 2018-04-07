@@ -1,18 +1,12 @@
 package com.example.abdoamin.RareMedicine.activity;
 
-import android.os.Binder;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -28,11 +22,13 @@ public class SwitchModeActivity extends AppCompatActivity {
     }
     @OnClick(R.id.switch_mode_search_medicine_btn)
     void onSearchMedicineBtnClick(){
-        Utiltis.noneModeSelect(this,"user");
+        Utiltis.currentMode=Utiltis.MODE_USER;
+        Utiltis.noneModeSelect(this,Utiltis.currentMode);
     }
     @OnClick(R.id.switch_mode_pharmacist_btn)
     void onPharmacistBtnClick(){
-        Utiltis.noneModeSelect(this,"pharmacist");
+        Utiltis.currentMode=Utiltis.MODE_PHARMACIST_NONE;
+        Utiltis.noneModeSelect(this,Utiltis.currentMode);
     }
 
     @Override

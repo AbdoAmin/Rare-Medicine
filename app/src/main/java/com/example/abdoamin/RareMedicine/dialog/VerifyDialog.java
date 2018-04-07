@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,8 +27,8 @@ import butterknife.Unbinder;
  */
 
 public class VerifyDialog extends Dialog {
-    Unbinder unbinder;
-    Context mContext;
+    private Unbinder unbinder;
+    private Context mContext;
     public VerifyDialog(@NonNull Context context) {
         super(context);
         mContext=context;
@@ -76,8 +75,18 @@ public class VerifyDialog extends Dialog {
 
     @Override
     public void dismiss() {
+        unbinder.unbind();
         super.dismiss();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Utiltis.mAuth.signOut();
+        mContext.startActivity(new Intent(mContext, LogInActivity.class));
+        ((Activity) mContext).finish();
+        dismiss();
+        super.onBackPressed();
     }
 }
 

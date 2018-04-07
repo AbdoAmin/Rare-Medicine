@@ -1,41 +1,32 @@
 package com.example.abdoamin.RareMedicine.activity;
 
 
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
-import com.example.abdoamin.RareMedicine.object.Pharmacy;
+import com.example.abdoamin.RareMedicine.dialog.Loading;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
+import java.util.Objects;
+
 
 public class SplashActivity extends AppCompatActivity {
-
+    CountDownTimer countDownTimer;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-
+    protected void onStart() {
+        super.onStart();
         Utiltis.getCurrentUserLocation(this);
         Utiltis.mAuth = FirebaseAuth.getInstance();
-        if (Utiltis.mAuth .getCurrentUser() != null) {
-            Toast.makeText(this, Utiltis.mAuth .getUid(), Toast.LENGTH_LONG).show();
-            Log.e("^_^:Abdo:",Utiltis.mAuth .getUid());
-        }
-        else {
-            Toast.makeText(this, "No", Toast.LENGTH_LONG).show();
-            Log.e("^_^:Abdo:","NO AUTH");
-        }
+        Utiltis.currentUser=Utiltis.mAuth.getCurrentUser();
 
-        new CountDownTimer(1000, 1000) {
+        countDownTimer=new CountDownTimer(1000, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -47,11 +38,26 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
 
-        }.start();
+        };
+        countDownTimer.start();
 
+    }
+
+    @Override
+    protected void onResume() {
+        countDownTimer.start();
+        super.onResume();
+
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
 
 
     }
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -74,14 +80,18 @@ public class SplashActivity extends AppCompatActivity {
             }
         }
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        countDownTimer.cancel();
+    }
 
-    void initializePharmacyUserAutoLogIn(){
-//        Utiltis.mAuth= FirebaseAuth.getInstance();
-//        Utiltis.mAuth.signInWithEmailAndPassword()
-                //Todo get prefrance email and pass
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     void openGpsWifi(){
-
+        //todo:
     }
 }

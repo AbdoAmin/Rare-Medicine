@@ -39,7 +39,7 @@ public class PharmacyAddMedicineActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_pharmacy_add_medicine);
         ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
 
         final ModifyProfileMedicineFragmentAdapter mModifyProfileMedicineFragmentAdapter =
                 new ModifyProfileMedicineFragmentAdapter(getSupportFragmentManager());

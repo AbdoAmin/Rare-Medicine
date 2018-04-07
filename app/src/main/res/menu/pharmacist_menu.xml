@@ -5,6 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/user_menu_search_medicine"
+            android:icon="@drawable/ic_menu_search"
+            android:title="Search Medicine" />
+
+        <item
             android:id="@+id/pharmacist_menu_profile"
             android:icon="@drawable/ic_menu_camera"
             android:title="Profile" />
@@ -13,6 +18,10 @@
             android:id="@+id/pharmacist_menu_edit_profile"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Edit Profile" />
+        <item
+            android:id="@+id/pharmacist_menu_edit_add_medicine"
+            android:icon="@drawable/ic_menu_logo"
+            android:title="Add Rare Medicine To System" />
         <item
             android:id="@+id/pharmacist_menu_log_out"
             android:icon="@drawable/ic_menu_manage"

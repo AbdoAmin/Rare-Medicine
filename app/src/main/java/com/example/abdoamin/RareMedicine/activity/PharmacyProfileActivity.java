@@ -56,13 +56,13 @@ public class PharmacyProfileActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_pharmacy_profile);
         unbinder = ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.MODE_PHARMACIST);
+        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
 
         if (Utiltis.currentUser == null)
             finish();
         else {
             if (Utiltis.currentUser.isEmailVerified()) {
-                Utiltis.getPharmacyProfileInfo(Utiltis.currentUser.getUid(), new Utiltis.ReturnValueResult<Pharmacy>() {
+                Utiltis.getPharmacyProfileInfo(this,Utiltis.currentUser.getUid(), new Utiltis.ReturnValueResult<Pharmacy>() {
                     @Override
                     public void onResult(Pharmacy pharmacy) {
                         mPharmacy = pharmacy;

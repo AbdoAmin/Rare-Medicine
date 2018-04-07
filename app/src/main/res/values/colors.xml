@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#00e5ff</color>
     <color name="colorPrimaryDark">#00b2cc</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#01579b</color>
 
     <!--background color move-->
     <color name="purple_500">#9C27B0</color>

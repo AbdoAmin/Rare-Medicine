@@ -87,8 +87,7 @@ public class DeleteProfileMedicineFragment extends Fragment {
 
 
     public static DeleteProfileMedicineFragment newInstance() {
-        DeleteProfileMedicineFragment fragment = new DeleteProfileMedicineFragment();
-        return fragment;
+        return new DeleteProfileMedicineFragment();
     }
 
     public void prepareToDelete() {
@@ -96,7 +95,7 @@ public class DeleteProfileMedicineFragment extends Fragment {
         oldList = Utiltis.mMedicineList;
         mMedicineRecycleAdapter = new MedicineRecycleAdapter(getActivity(), Utiltis.mMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
             @Override
-            public void onMedicineClick(final Medicine medicine) {
+            synchronized public void onMedicineClick(final Medicine medicine) {
                 Utiltis.deleteMedicineFromPharmacy(Utiltis.currentUser.getUid(), medicine.getMedID(), new Utiltis.ReturnValueResult<Boolean>() {
                     @Override
                     public void onResult(Boolean object) {
@@ -106,7 +105,7 @@ public class DeleteProfileMedicineFragment extends Fragment {
                             Utiltis.mMedicineList.remove(medicine);//1
                             Utiltis.allSystemMedicineList.add(medicine);
                             Utiltis.removeDuplicatedItemsInList(Utiltis.mMedicineList);
-                            mMedicineRecycleAdapter.addList(Utiltis.mMedicineList);
+                            mMedicineRecycleAdapter.addList(/*Utiltis.mMedicineList*/oldList);
                         }
                     }
                 });
@@ -114,9 +113,6 @@ public class DeleteProfileMedicineFragment extends Fragment {
         });
         mMedicineRecycleView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mMedicineRecycleView.setAdapter(mMedicineRecycleAdapter);
-        mMedicineRecycleView.setHasFixedSize(true);
-        mMedicineRecycleView.setItemAnimator(new DefaultItemAnimator());
-        mMedicineRecycleView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
     }
 
     @Override

@@ -7,6 +7,7 @@
     tools:context="com.example.abdoamin.RareMedicine.activity.SplashActivity">
 
     <ImageView
+        android:id="@+id/imageViewSplash"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="110dp"

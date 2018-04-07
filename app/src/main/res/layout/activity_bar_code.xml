@@ -1,37 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.abdoamin.RareMedicine.activity.BarCodeActivity">
+    tools:context=".activity.BarCodeActivity">
 
-    <!--<ImageButton-->
-        <!--android:id="@+id/barcode_flash_btn"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="16dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:src="@drawable/flash"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <fragment
-        android:id="@+id/barcode_scanner"
-        android:name="info.androidhive.barcode.BarcodeReader"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:auto_focus="true"
-        app:use_flash="false" />
+        android:layout_above="@+id/actions"
+        android:gravity="center">
 
-    <info.androidhive.barcode.ScannerOverlay
+        <fragment
+            android:id="@+id/barcode"
+            android:name="com.google.android.gms.samples.vision.barcodereader.BarcodeCapture"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            app:gvb_auto_focus="true"
+            app:gvb_code_format="code_39|aztec"
+            app:gvb_flash="false"
+            app:gvb_rect_colors="@array/rect_color" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/actions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#44000000"
-        app:line_color="#7323DC"
-        app:line_speed="6"
-        app:line_width="4"
-        app:square_height="200"
-        app:square_width="200" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-</android.support.constraint.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/focus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="focus" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/on_flash"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_weight="1"
+                android:text="flash" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/support_multiple"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="multiple scan" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/front_cam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_weight="1"
+                android:text="front cam" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
