@@ -10,15 +10,22 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.example.abdoamin.RareMedicine.R;
-import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.PharmacyRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 
-import java.util.ArrayList;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
+
+
+import static com.example.abdoamin.RareMedicine.Utiltis.currentMode;
+import static com.example.abdoamin.RareMedicine.Utiltis.nearbyPharmacyList;
+import static com.example.abdoamin.RareMedicine.Utiltis.removeEventListener;
+import static com.example.abdoamin.RareMedicine.Utiltis.searchMedicine;
+import static com.example.abdoamin.RareMedicine.Utiltis.setUpMenuNavView;
+import static com.example.abdoamin.RareMedicine.Utiltis.ReturnValueResult;
 
 public class SearchMedicineResultActivity extends AppCompatActivity {
     @BindView(R.id.searsh_medicine_result_nearb_pharmacy_recycleView)
@@ -36,23 +43,34 @@ public class SearchMedicineResultActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_search_medicine_result);
         ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
-        PharmacyRecycleAdapter mPharmacyRecycleAdapter = new PharmacyRecycleAdapter(Utiltis.nearbyPharmacyList, this, new PharmacyRecycleAdapter.PharmacyClickListener() {
+        setUpMenuNavView(this, toolbar, drawer, navigationView, currentMode);
+
+        String medicineId=getIntent().getStringExtra(getString(R.string.medicine_id));
+        if(medicineId==null){
+
+        }
+        searchMedicine(this, medicineId, new ReturnValueResult<List<Pharmacy>>() {
             @Override
-            public void onPharmacyClick(int position) {
-                Intent intent = new Intent(SearchMedicineResultActivity.this, PharmacyProfileUserActivity.class);
-                intent.putExtra(getString(R.string.pharmacy_position), position);
-                startActivity(intent);
+            public void onResult(List<Pharmacy> pharmacyList) {
+                PharmacyRecycleAdapter mPharmacyRecycleAdapter = new PharmacyRecycleAdapter(nearbyPharmacyList, SearchMedicineResultActivity.this, new PharmacyRecycleAdapter.PharmacyClickListener() {
+                    @Override
+                    public void onPharmacyClick(int position) {
+                        Intent intent = new Intent(SearchMedicineResultActivity.this, PharmacyProfileUserActivity.class);
+                        intent.putExtra(getString(R.string.pharmacy_position), position);
+                        startActivity(intent);
+                    }
+                });
+                mPharmacyRecycleView.setLayoutManager(new LinearLayoutManager(SearchMedicineResultActivity.this));
+                mPharmacyRecycleView.setAdapter(mPharmacyRecycleAdapter);
             }
         });
-        mPharmacyRecycleView.setLayoutManager(new LinearLayoutManager(this));
-        mPharmacyRecycleView.setAdapter(mPharmacyRecycleAdapter);
+
 
 
     }
-
-    @OnClick(R.id.searsh_medicine_result_open_map)
-    void onMapBtnClick() {
-        startActivity(new Intent(this, PharmacyMapActivity.class));
+    @Override
+    protected void onDestroy() {
+        removeEventListener();
+        super.onDestroy();
     }
 }

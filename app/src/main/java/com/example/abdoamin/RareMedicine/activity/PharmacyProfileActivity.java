@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.abdoamin.RareMedicine.R;
-import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.dialog.VerifyDialog;
 import com.example.abdoamin.RareMedicine.object.Medicine;
@@ -24,10 +23,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.example.abdoamin.RareMedicine.Utiltis.currentMode;
+import static com.example.abdoamin.RareMedicine.Utiltis.currentUser;
+import static com.example.abdoamin.RareMedicine.Utiltis.getPharmacyProfileInfo;
+import static com.example.abdoamin.RareMedicine.Utiltis.logOut;
+import static com.example.abdoamin.RareMedicine.Utiltis.setUpMenuNavView;
+import static com.example.abdoamin.RareMedicine.Utiltis.ReturnValueResult;
 
 public class PharmacyProfileActivity extends AppCompatActivity {
     @BindView(R.id.pharmacy_profile_image_imagView)
-    ImageView photo;
+    CircleImageView photo;
     @BindView(R.id.pharmacy_profile_name_textView)
     TextView name;
     @BindView(R.id.pharmacy_profile_phone_textView)
@@ -56,23 +63,26 @@ public class PharmacyProfileActivity extends AppCompatActivity {
         setContentView(R.layout.menu_activity_pharmacy_profile);
         unbinder = ButterKnife.bind(this);
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
+        setUpMenuNavView(this, toolbar, drawer, navigationView, currentMode);
 
-        if (Utiltis.currentUser == null)
+        if (currentUser == null) {
             finish();
+            logOut(this);
+        }
         else {
-            if (Utiltis.currentUser.isEmailVerified()) {
-                Utiltis.getPharmacyProfileInfo(this,Utiltis.currentUser.getUid(), new Utiltis.ReturnValueResult<Pharmacy>() {
+            if (currentUser.isEmailVerified()) {
+                getPharmacyProfileInfo(this, currentUser.getUid(), new ReturnValueResult<Pharmacy>() {
                     @Override
                     public void onResult(Pharmacy pharmacy) {
                         mPharmacy = pharmacy;
                         setViews();
                     }
-                }, new Utiltis.ReturnValueResult<Pharmacy>() {
+                }, new ReturnValueResult<Pharmacy>() {
                     @Override
                     public void onResult(Pharmacy pharmacy) {
                         mPharmacy = pharmacy;
-                        mMedicineRecycleAdapter = new MedicineRecycleAdapter(PharmacyProfileActivity.this, mPharmacy.getMedicine(), new MedicineRecycleAdapter.MedicineClickListener() {
+                        mMedicineRecycleAdapter = new MedicineRecycleAdapter(PharmacyProfileActivity.this, mPharmacy.getMedicine()
+                                , new MedicineRecycleAdapter.MedicineClickListener() {
                             @Override
                             public void onMedicineClick(Medicine medicine) {
                                 //Todo take action onclick medicine
@@ -84,7 +94,7 @@ public class PharmacyProfileActivity extends AppCompatActivity {
                 });
             }
             else {
-                //Todo:show dialog ....not virefied
+                //Todo:dissmis when verify
                 VerifyDialog verifyDialog=new VerifyDialog(this);
                 verifyDialog.show();
                 verifyDialog.setCanceledOnTouchOutside(false);

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,6 +17,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import static com.example.abdoamin.RareMedicine.Utiltis.nearbyPharmacyList;
+import static com.example.abdoamin.RareMedicine.Utiltis.showAllNearbyPharmacyOnMap;
+
 public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private static final int MY_LOCATION_REQUEST_CODE = 1;
@@ -24,11 +28,13 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 //    private double longitude;
 //    private String img;
 //    private String name;
+    int specificItemClickPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pharmacy_map);
+        specificItemClickPosition=getIntent().getIntExtra(getString(R.string.specificItemClickPosition),0);
 
 //        setVariable();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -66,7 +72,7 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 ////                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
 //        );
 //        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pharmcyLatLng, 15));
-        Utiltis.showAllNearbyPharmacyOnMap(Utiltis.nearbyPharmacyList,mMap);
+       showAllNearbyPharmacyOnMap(nearbyPharmacyList,mMap,specificItemClickPosition);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -90,10 +96,10 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
 //    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == MY_LOCATION_REQUEST_CODE) {
             if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                    permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     mMap.setMyLocationEnabled(true);
@@ -113,5 +119,6 @@ public class PharmacyMapActivity extends FragmentActivity implements OnMapReadyC
                 2000, null);
         return true;
     }
+
 
 }

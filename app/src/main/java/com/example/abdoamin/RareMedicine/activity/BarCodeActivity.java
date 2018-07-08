@@ -75,6 +75,7 @@ public class BarCodeActivity extends AppCompatActivity implements BarcodeRetriev
             public void run() {
 
                 Utiltis.barCodeResult(BarCodeActivity.this, barcode.displayValue, activity);
+                finish();
 
             }
         });
@@ -88,15 +89,15 @@ public class BarCodeActivity extends AppCompatActivity implements BarcodeRetriev
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String message = "Code selected : " + closetToClick.displayValue + "\n\nother " +
-                        "codes in frame include : \n";
+                StringBuilder message = new StringBuilder("Code selected : " + closetToClick.displayValue + "\n\nother " +
+                        "codes in frame include : \n");
                 for (int index = 0; index < barcodeGraphics.size(); index++) {
                     Barcode barcode = barcodeGraphics.get(index).getBarcode();
-                    message += (index + 1) + ". " + barcode.displayValue + "\n";
+                    message.append(index + 1).append(". ").append(barcode.displayValue).append("\n");
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(BarCodeActivity.this)
                         .setTitle("code retrieved")
-                        .setMessage(message);
+                        .setMessage(message.toString());
                 builder.show();
             }
         });

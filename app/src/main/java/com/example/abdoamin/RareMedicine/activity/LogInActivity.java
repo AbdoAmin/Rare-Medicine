@@ -14,14 +14,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.abdoamin.RareMedicine.GradientBackgroundPainter;
 import com.example.abdoamin.RareMedicine.R;
-import com.example.abdoamin.RareMedicine.Utiltis;
 import com.google.firebase.auth.FirebaseAuth;
 import com.scottyab.showhidepasswordedittext.ShowHidePasswordEditText;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.example.abdoamin.RareMedicine.Utiltis.MODE_PHARMACIST;
+import static com.example.abdoamin.RareMedicine.Utiltis.currentUser;
+import static com.example.abdoamin.RareMedicine.Utiltis.currentMode;
+import static com.example.abdoamin.RareMedicine.Utiltis.logIn;
+import static com.example.abdoamin.RareMedicine.Utiltis.mAuth;
+import static com.example.abdoamin.RareMedicine.Utiltis.setUpMenuNavView;
+import static com.example.abdoamin.RareMedicine.Utiltis.setUpMyPreferenceMode;
 
 public class LogInActivity extends AppCompatActivity {
     @BindView(R.id.log_in_email_editText)EditText email;
@@ -38,8 +46,10 @@ public class LogInActivity extends AppCompatActivity {
     Toolbar toolbar;
 
 
+    private GradientBackgroundPainter gradientBackgroundPainter;
+
     AnimationDrawable animationDrawable;
-    ImageView imageView;
+    @BindView(R.id.imageView3) ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,18 +58,24 @@ public class LogInActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setColorEditTextShowPasswordIcon();
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
+        setUpMenuNavView(this, toolbar, drawer, navigationView, currentMode);
 
-        //image background animation color
-        imageView = (ImageView)findViewById(R.id.imageView3);
-        animationDrawable = (AnimationDrawable) imageView.getBackground();
-        animationDrawable.setEnterFadeDuration(5000);
-        animationDrawable.setExitFadeDuration(2000);
+//        //image background animation color
+//        animationDrawable = (AnimationDrawable) imageView.getBackground();
+//        animationDrawable.setEnterFadeDuration(5000);
+//        animationDrawable.setExitFadeDuration(2000);
 
-        Utiltis.currentUser=Utiltis.mAuth.getCurrentUser();
-        if (Utiltis.currentUser != null) {
-            Utiltis.currentMode=Utiltis.MODE_PHARMACIST;
-            Utiltis.setUpMyPreferenceMode(this, Utiltis.MODE_PHARMACIST);
+        final int[] drawables = new int[4];
+        drawables[0] = R.drawable.gradient_4;
+        drawables[1] = R.drawable.gradient_3;
+        drawables[2] = R.drawable.gradient_2;
+        drawables[3] = R.drawable.gradient_1;
+        gradientBackgroundPainter = new GradientBackgroundPainter(imageView, drawables);
+
+        currentUser=mAuth.getCurrentUser();
+        if (currentUser != null) {
+            currentMode=MODE_PHARMACIST;
+           setUpMyPreferenceMode(this, MODE_PHARMACIST);
             Intent intent = new Intent(this, PharmacyProfileActivity.class);
             startActivity(intent);
             finish();
@@ -73,6 +89,12 @@ public class LogInActivity extends AppCompatActivity {
     }
     @OnClick(R.id.log_in_log_in_btn)
     void onLogInBtnClick(){
+        //just for testing admin
+        if(email.getText().toString().equals("admin")&&password.getText().toString().equals("admin")) {
+            startActivity(new Intent(this,AdminRequestMedicineMangerActivity.class));
+            return;
+        }
+        //end test..
         if(email.getText().toString().length()<3) {
             Toast.makeText(this, "Email not Valid", Toast.LENGTH_SHORT).show();
             return;
@@ -81,23 +103,31 @@ public class LogInActivity extends AppCompatActivity {
             Toast.makeText(this, "Password less than 8", Toast.LENGTH_SHORT).show();
             return;
         }
-        Utiltis.logIn(this,email.getText().toString(),password.getText().toString());
+        logIn(this,email.getText().toString(),password.getText().toString());
     }
     @Override
     protected void onResume() {
         super.onResume();
-        if (animationDrawable != null && !animationDrawable.isRunning())
-            animationDrawable.start();
+//        if (animationDrawable != null && !animationDrawable.isRunning())
+//            animationDrawable.start();
+        gradientBackgroundPainter.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (animationDrawable != null && animationDrawable.isRunning())
-            animationDrawable.stop();
+//        if (animationDrawable != null && animationDrawable.isRunning())
+//            animationDrawable.stop();
+        gradientBackgroundPainter.stop();
     }
     void setColorEditTextShowPasswordIcon(){
         password.setTintColor(getResources().getColor(R.color.colorPrimary));
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        gradientBackgroundPainter.stop();
+        super.onDestroy();
     }
 }

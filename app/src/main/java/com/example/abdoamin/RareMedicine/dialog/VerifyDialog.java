@@ -22,6 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.abdoamin.RareMedicine.Utiltis.logOut;
+
 /**
  * Created by Abdo Amin on 3/18/2018.
  */
@@ -61,9 +63,7 @@ public class VerifyDialog extends Dialog {
                         });
                 break;
             case R.id.verification_dialog_log_out_btn:
-                Utiltis.mAuth.signOut();
-                mContext.startActivity(new Intent(mContext, LogInActivity.class));
-                ((Activity) mContext).finish();
+               logOut(mContext);
                 dismiss();
                 break;
             default:
@@ -82,10 +82,7 @@ public class VerifyDialog extends Dialog {
 
     @Override
     public void onBackPressed() {
-        Utiltis.mAuth.signOut();
-        mContext.startActivity(new Intent(mContext, LogInActivity.class));
-        ((Activity) mContext).finish();
-        dismiss();
+        logOut(mContext);
         super.onBackPressed();
     }
 }

@@ -6,25 +6,25 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/user_menu_search_medicine"
-            android:icon="@drawable/ic_menu_search"
+            android:icon="@drawable/ic_search_black_24dp"
             android:title="Search Medicine" />
 
         <item
             android:id="@+id/pharmacist_menu_profile"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_person_black_24dp"
             android:title="Profile" />
 
         <item
             android:id="@+id/pharmacist_menu_edit_profile"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_edit_black_24dp"
             android:title="Edit Profile" />
         <item
             android:id="@+id/pharmacist_menu_edit_add_medicine"
-            android:icon="@drawable/ic_menu_logo"
-            android:title="Add Rare Medicine To System" />
+            android:icon="@drawable/ic_add_box_black_24dp"
+            android:title="Request Rare Medicine To System" />
         <item
             android:id="@+id/pharmacist_menu_log_out"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="LogOut" />
     </group>
 
@@ -32,7 +32,7 @@
         <menu>
             <item
                 android:id="@+id/pharmacist_menu_switch_mode"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_swap_horiz_black_24dp"
                 android:title="Switch Mode" />
         </menu>
     </item>

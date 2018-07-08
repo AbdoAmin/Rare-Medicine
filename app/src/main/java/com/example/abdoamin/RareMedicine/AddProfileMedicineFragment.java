@@ -26,6 +26,15 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 
+import static com.example.abdoamin.RareMedicine.Utiltis.addMedicineToPharmacy;
+import static com.example.abdoamin.RareMedicine.Utiltis.allSystemMedicineList;
+import static com.example.abdoamin.RareMedicine.Utiltis.barCode;
+import static com.example.abdoamin.RareMedicine.Utiltis.currentUser;
+import static com.example.abdoamin.RareMedicine.Utiltis.getAllRareMedicineInRecyclerView;
+import static com.example.abdoamin.RareMedicine.Utiltis.mMedicineList;
+import static com.example.abdoamin.RareMedicine.Utiltis.removeDuplicatedItemsInList;
+import static com.example.abdoamin.RareMedicine.Utiltis.ReturnValueResult;
+
 /**
  * Created by Abdo Amin on 2/13/2018.
  */
@@ -59,7 +68,7 @@ public class AddProfileMedicineFragment extends Fragment {
     @OnClick(R.id.fragment_modify_medicine_barcode_btn)
     void onBarCodeBtnClick() {
         ModifyProfileMedicineFragmentAdapter.currentTabIndex = 1;
-        Utiltis.barCode(getActivity());
+        barCode(getActivity());
     }
 
     //TODO check barcode result not responde to search
@@ -72,10 +81,10 @@ public class AddProfileMedicineFragment extends Fragment {
                 currentList.add(medicine);
         }
         if (searchEditText.getText().toString().trim().equals("")) {
-            Utiltis.removeDuplicatedItemsInList(oldList);
+            removeDuplicatedItemsInList(oldList);
             mMedicineRecycleAdapter.addList(oldList);
         } else {
-            Utiltis.removeDuplicatedItemsInList(currentList);
+            removeDuplicatedItemsInList(currentList);
             mMedicineRecycleAdapter.addList(currentList);
         }
     }
@@ -85,31 +94,31 @@ public class AddProfileMedicineFragment extends Fragment {
     }
 
     public void prepareToAdd() {
-        if (Utiltis.allSystemMedicineList == null)
-            Utiltis.allSystemMedicineList = new ArrayList<>();
-        mMedicineRecycleAdapter = new MedicineRecycleAdapter(getActivity(), Utiltis.allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
+        if (allSystemMedicineList == null)
+            allSystemMedicineList = new ArrayList<>();
+        mMedicineRecycleAdapter = new MedicineRecycleAdapter(getActivity(), allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
             @Override
             public void onMedicineClick(final Medicine medicine) {
-                Utiltis.addMedicineToPharmacy(Utiltis.currentUser.getUid(), medicine.getMedID(), new Utiltis.ReturnValueResult<Boolean>() {
+                addMedicineToPharmacy(currentUser.getUid(), medicine.getMedID(), new ReturnValueResult<Boolean>() {
                     @Override
                     public void onResult(Boolean object) {
                         if (object) {
                             searchEditText.setText("");
-                            Utiltis.allSystemMedicineList.remove(medicine);
+                            allSystemMedicineList.remove(medicine);
                             oldList.remove(medicine);
-                            mMedicineRecycleAdapter.addList(Utiltis.allSystemMedicineList);
+                            mMedicineRecycleAdapter.addList(allSystemMedicineList);
                         }
                     }
                 });
 
             }
         });
-        Utiltis.getAllMedicineInList(getActivity(),searchEditText,PharmacyAddMedicineActivity.code, mMedicineRecycleView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
+        getAllRareMedicineInRecyclerView(getActivity(),searchEditText,PharmacyAddMedicineActivity.code, mMedicineRecycleView, mMedicineRecycleAdapter, new ReturnValueResult<List<Medicine>>() {
             @Override
             public void onResult(List<Medicine> object) {
-                Utiltis.allSystemMedicineList.removeAll(Utiltis.mMedicineList);
-                oldList = Utiltis.allSystemMedicineList;
-                mMedicineRecycleAdapter.addList(Utiltis.allSystemMedicineList);
+                allSystemMedicineList.removeAll(mMedicineList);
+                oldList = allSystemMedicineList;
+                mMedicineRecycleAdapter.addList(allSystemMedicineList);
                 if (PharmacyAddMedicineActivity.code != null && ModifyProfileMedicineFragmentAdapter.currentTabIndex == 1) {
                     searchEditText.setText(PharmacyAddMedicineActivity.code);
                     PharmacyAddMedicineActivity.code = null;

@@ -1,16 +1,19 @@
 package com.example.abdoamin.RareMedicine.adapter;
 
+
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
+import com.example.abdoamin.RareMedicine.activity.PharmacyMapActivity;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
 import com.squareup.picasso.Picasso;
 
@@ -20,6 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Abdo Amin on 1/27/2018.
@@ -29,10 +33,10 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
 
     private List<Pharmacy> pharmacyList;
     private PharmacyClickListener mPharmacyClickListener;
-    Context mContext;
+    private Context mContext;
 
     public PharmacyRecycleAdapter(List<Pharmacy> medicines, Context context, PharmacyClickListener medicineClickListener) {
-        this.pharmacyList = new ArrayList<Pharmacy>();
+        this.pharmacyList = new ArrayList<>();
         pharmacyList.addAll(medicines);
         mPharmacyClickListener = medicineClickListener;
         this.mContext = context;
@@ -42,8 +46,8 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_pharmacy, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+
+        return new ViewHolder(view);
     }
 
     @Override
@@ -69,9 +73,9 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
         return pharmacyList.get(position);
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         @BindView(R.id.item_pharmacy_photo)
-        ImageView photo;
+        CircleImageView photo;
         @BindView(R.id.item_pharmacy_name_textView)
         TextView name;
         @BindView(R.id.item_pharmacy_address_textView)
@@ -87,14 +91,22 @@ public class PharmacyRecycleAdapter extends RecyclerView.Adapter<PharmacyRecycle
         void bind(int position) {
             name.setText(getPharmacy(position).getName());
             address.setText(getPharmacy(position).getAddress());
-            distance.setText(Utiltis.mileToKmMeterToStringFormat(getPharmacy(position).getDistance()));
+            distance.setText(Utiltis.mileToKm_MeterToStringFormat(getPharmacy(position).getDistance()));
             Picasso.with(mContext).load(Uri.parse(getPharmacy(position).getImg())).into(photo);
+            Picasso.with(mContext).load(Uri.parse(getPharmacy(position).getImg())).into(photo);
+
         }
 
 
         @OnClick
         public void onClick(View v) {
             mPharmacyClickListener.onPharmacyClick(getAdapterPosition());
+        }
+        @OnClick(R.id.item_pharmacy_menu_imageView)
+        void onLocationClick(){
+            Intent intent=new Intent(mContext, PharmacyMapActivity.class);
+            intent.putExtra(mContext.getString(R.string.specificItemClickPosition),getAdapterPosition());
+            mContext.startActivity(intent);
         }
     }
 

@@ -72,10 +72,12 @@ public class GPSTracker extends Service implements LocationListener {
             } else {
                 this.canGetLocation = true;
                 if (isNetworkEnabled) {
-                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions((Activity) mContext, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions((Activity) mContext,
+                                new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                                 100);
-                        Toast.makeText(mContext, "prem", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(mContext, "prem", Toast.LENGTH_LONG).show();
 
                     }
                     locationManager.requestLocationUpdates(
@@ -88,7 +90,8 @@ public class GPSTracker extends Service implements LocationListener {
                         if (location != null) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            Toast.makeText(mContext, String.valueOf(latitude) + " , " + String.valueOf(longitude), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(mContext, String.valueOf(latitude) + " , " + String.valueOf(longitude),
+//                                    Toast.LENGTH_LONG).show();
 
                         }
                     }
@@ -96,9 +99,11 @@ public class GPSTracker extends Service implements LocationListener {
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
 
-                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions((Activity) mContext, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-                        Toast.makeText(mContext, "prem", Toast.LENGTH_LONG).show();
+                    if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions((Activity) mContext,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
+//                        Toast.makeText(mContext, "prem", Toast.LENGTH_LONG).show();
 
                     }
                     if (location == null) {
@@ -112,7 +117,7 @@ public class GPSTracker extends Service implements LocationListener {
                             if (location != null) {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
-                                Toast.makeText(mContext, String.valueOf(latitude) + " , " + String.valueOf(longitude), Toast.LENGTH_LONG).show();
+//                                Toast.makeText(mContext, String.valueOf(latitude) + " , " + String.valueOf(longitude), Toast.LENGTH_LONG).show();
 
                             }
                         }
@@ -121,7 +126,7 @@ public class GPSTracker extends Service implements LocationListener {
             }
 
         } catch (Exception e) {
-            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(mContext, e.toString(), Toast.LENGTH_LONG).show();
             Log.e("GPS ^_^", e.toString());
 
         }

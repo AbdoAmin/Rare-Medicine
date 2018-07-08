@@ -25,6 +25,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import id.zelory.compressor.Compressor;
 
+import static com.example.abdoamin.RareMedicine.Utiltis.pharmacySignUpContinue;
+
 
 public class SignUpContinueActivity extends AppCompatActivity {
     private static final int RESULT_LOAD_IMG = 1;
@@ -58,7 +60,7 @@ public class SignUpContinueActivity extends AppCompatActivity {
 
     @OnClick(R.id.sign_up_continue_next_btn)
     void onNextBtnClick() {
-        Utiltis.pharmacySignUpContinue(this, userID, imageUri, address.getText().toString(), phoneNumber.getText().toString());
+        pharmacySignUpContinue(this, userID, imageUri, address.getText().toString(), phoneNumber.getText().toString());
     }
 
     @SuppressLint("CheckResult")
@@ -74,7 +76,6 @@ public class SignUpContinueActivity extends AppCompatActivity {
                 File actualImage;
                 File compressedImage;
                 actualImage = FileUtil.from(this, data.getData());
-                Log.e("^_^", actualImage.getPath());
                 compressedImage = new Compressor(this).compressToFile(actualImage);
                 imageShow.setImageBitmap(BitmapFactory.decodeFile(compressedImage.getAbsolutePath()));
                 imageUri = Uri.fromFile(compressedImage);

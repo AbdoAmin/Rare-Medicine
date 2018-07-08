@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     android:background="@drawable/recycle_item"
     android:orientation="horizontal"
+    android:paddingStart="1dp"
     android:paddingLeft="1dp">
 
     <ImageView

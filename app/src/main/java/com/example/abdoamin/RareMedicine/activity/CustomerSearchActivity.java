@@ -9,13 +9,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.example.abdoamin.RareMedicine.NetworkChangeReceiver;
 import com.example.abdoamin.RareMedicine.R;
-import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.object.Medicine;
 import com.example.abdoamin.RareMedicine.object.Pharmacy;
@@ -27,6 +24,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+
+import static com.example.abdoamin.RareMedicine.Utiltis.allSystemMedicineList;
+import static com.example.abdoamin.RareMedicine.Utiltis.barCode;
+import static com.example.abdoamin.RareMedicine.Utiltis.currentMode;
+import static com.example.abdoamin.RareMedicine.Utiltis.getAllRareMedicineInRecyclerView;
+import static com.example.abdoamin.RareMedicine.Utiltis.removeEventListener;
+import static com.example.abdoamin.RareMedicine.Utiltis.searchAboutAllCharacter;
+import static com.example.abdoamin.RareMedicine.Utiltis.searchMedicine;
+import static com.example.abdoamin.RareMedicine.Utiltis.setUpMenuNavView;
+import static com.example.abdoamin.RareMedicine.Utiltis.ReturnValueResult;
 
 public class CustomerSearchActivity extends AppCompatActivity {
     @BindView(R.id.customer_search_medicine_list_recycleView)
@@ -53,18 +60,21 @@ public class CustomerSearchActivity extends AppCompatActivity {
         String barCodeResult = getIntent().getStringExtra("code");
 
         //menu
-        Utiltis.setUpMenuNavView(this, toolbar, drawer, navigationView, Utiltis.currentMode);
+        setUpMenuNavView(this, toolbar, drawer, navigationView, currentMode);
 
         medicineArrayList = new ArrayList<>();
-        if (Utiltis.allSystemMedicineList == null)
-            Utiltis.allSystemMedicineList = new ArrayList<>();
-        mMedicineRecycleAdapter = new MedicineRecycleAdapter(this, Utiltis.allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
+        if (allSystemMedicineList == null)
+            allSystemMedicineList = new ArrayList<>();
+        mMedicineRecycleAdapter = new MedicineRecycleAdapter(this, allSystemMedicineList, new MedicineRecycleAdapter.MedicineClickListener() {
             @Override
             public void onMedicineClick(Medicine medicine) {
-                searchMedicineByID(medicine.getMedID());
+                Intent intent=new Intent(CustomerSearchActivity.this,SearchMedicineResultActivity.class);
+                intent.putExtra(getString(R.string.medicine_id),medicine.getMedID());
+                startActivity(intent);
+//                searchMedicineByID(medicine.getMedID());
             }
         });
-        Utiltis.getAllMedicineInList(this,searchEditText,barCodeResult, mRecyclerView, mMedicineRecycleAdapter, new Utiltis.ReturnValueResult<List<Medicine>>() {
+        getAllRareMedicineInRecyclerView(this,searchEditText,barCodeResult, mRecyclerView, mMedicineRecycleAdapter, new ReturnValueResult<List<Medicine>>() {
             @Override
             public void onResult(List<Medicine> object) {
 
@@ -75,22 +85,22 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @OnTextChanged(R.id.customer_search_search_editText)
     void textChange() {
         medicineArrayList.clear();
-        for (Medicine medicine : Utiltis.allSystemMedicineList) {
+        for (Medicine medicine : allSystemMedicineList) {
 //            if (medicine.getName().contains(searchEditText.getText().toString()) ||
 //                    medicine.getMedID().contains(searchEditText.getText().toString()))
-            if (Utiltis.searchAboutAllCharacter(searchEditText.getText().toString(), medicine.getName()) ||
+            if (searchAboutAllCharacter(searchEditText.getText().toString(), medicine.getName()) ||
                     medicine.getMedID().contains(searchEditText.getText().toString()))
                 medicineArrayList.add(medicine);
         }
         if (searchEditText.getText().toString().trim().equals(""))
-            mMedicineRecycleAdapter.addList(Utiltis.allSystemMedicineList);
+            mMedicineRecycleAdapter.addList(allSystemMedicineList);
         else
             mMedicineRecycleAdapter.addList(medicineArrayList);
     }
 
     @OnClick(R.id.customer_search_barcode_btn)
     void barcode() {
-        Utiltis.barCode(this);
+        barCode(this);
     }
 
 //    @OnClick(R.id.customer_search_search_btn)
@@ -99,13 +109,12 @@ public class CustomerSearchActivity extends AppCompatActivity {
 //    }
 
     void searchMedicineByID(String medicineId) {
-        Utiltis.searchMedicine(this, medicineId, new Utiltis.ReturnValueResult<List<Pharmacy>>() {
+        searchMedicine(this, medicineId, new ReturnValueResult<List<Pharmacy>>() {
             @Override
             public void onResult(List<Pharmacy> pharmacyList) {
                 startActivity(new Intent(CustomerSearchActivity.this, SearchMedicineResultActivity.class));
             }
         });
-        //TODO complete searchMedicine function
     }
 
     NetworkChangeReceiver receiver;
@@ -113,17 +122,17 @@ public class CustomerSearchActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        receiver = new NetworkChangeReceiver();
-        registerReceiver(
-                receiver,
-                new IntentFilter(
-                        ConnectivityManager.CONNECTIVITY_ACTION));
+//        receiver = new NetworkChangeReceiver();
+//        registerReceiver(
+//                receiver,
+//                new IntentFilter(
+//                        ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
-        Utiltis.removeEventListener();
+//        unregisterReceiver(receiver);
+        removeEventListener();
     }
 }

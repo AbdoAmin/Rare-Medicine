@@ -35,6 +35,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.example.abdoamin.RareMedicine.Utiltis.isEmailValid;
+
 public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
     private static final int MY_LOCATION_REQUEST_CODE = 1;
     private GoogleMap mMap;
@@ -50,14 +52,6 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
     ShowHidePasswordEditText confirmedPassword;
     @BindView(R.id.sign_up_pharmacy_name_editText)
     EditText name;
-
-//    //menu
-//    @BindView(R.id.drawer_layout)
-//    DrawerLayout drawer;
-//    @BindView(R.id.nav_view)
-//    NavigationView navigationView;
-//    @BindView(R.id.toolbar)
-//    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +75,7 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     void onSignUpBtnClick() {
-        if(email.getText().toString().length()<3){
+        if(!isEmailValid(email.getText().toString())){
             Toast.makeText(this, "Check Email Address", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -103,7 +97,6 @@ public class SignUpActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         else{
             Toast.makeText(this, "This Password doesn't match", Toast.LENGTH_SHORT).show();
-            return;
         }
     }
 

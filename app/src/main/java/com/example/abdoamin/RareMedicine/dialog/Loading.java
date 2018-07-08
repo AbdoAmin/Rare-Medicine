@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.abdoamin.RareMedicine.GradientBackgroundPainter;
 import com.example.abdoamin.RareMedicine.R;
 import com.example.abdoamin.RareMedicine.Utiltis;
 import com.example.abdoamin.RareMedicine.activity.LogInActivity;
@@ -48,8 +49,11 @@ public class Loading extends Dialog {
     ImageView imageView;
     @BindView(R.id.textView2)
     TextView loadingTextView;
-    Thread t;
+
     private JumpingBeans jumpingBeans2;
+
+    private GradientBackgroundPainter gradientBackgroundPainter;
+
 
     public Loading(@NonNull Context context) {
         super(context);
@@ -63,13 +67,23 @@ public class Loading extends Dialog {
         setContentView(R.layout.loading_dialog);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         unbinder = ButterKnife.bind(this, Loading.this);
+//
+//        //image background animation color
+//        animationDrawable = (AnimationDrawable) imageView.getBackground();
+//        animationDrawable.setEnterFadeDuration(5000);
+//        animationDrawable.setExitFadeDuration(2000);
+//        if (animationDrawable != null && !animationDrawable.isRunning())
+//            animationDrawable.start();
 
-        //image background animation color
-        animationDrawable = (AnimationDrawable) imageView.getBackground();
-        animationDrawable.setEnterFadeDuration(5000);
-        animationDrawable.setExitFadeDuration(2000);
-        if (animationDrawable != null && !animationDrawable.isRunning())
-            animationDrawable.start();
+        //new grediant
+        final int[] drawables = new int[4];
+        drawables[0] = R.drawable.gradient_4;
+        drawables[1] = R.drawable.gradient_3;
+        drawables[2] = R.drawable.gradient_2;
+        drawables[3] = R.drawable.gradient_1;
+        gradientBackgroundPainter = new GradientBackgroundPainter(imageView, drawables);
+        gradientBackgroundPainter.start();
+
 
 //     t = new Thread() {
 //
@@ -105,21 +119,21 @@ public class Loading extends Dialog {
     @Override
     public void dismiss() {
         unbinder.unbind();
-        if (animationDrawable != null && animationDrawable.isRunning())
-            animationDrawable.stop();
+//        if (animationDrawable != null && animationDrawable.isRunning())
+//            animationDrawable.stop();
 //        t.interrupt();
         jumpingBeans2.stopJumping();
         super.dismiss();
+        gradientBackgroundPainter.stop();
 
     }
 
 
     @Override
     public void onBackPressed() {
-        mContext.startActivity(new Intent(mContext, LogInActivity.class));
-        ((Activity) mContext).finish();
         dismiss();
-        super.onBackPressed();
+        ((Activity) mContext).onBackPressed();
+
     }
 
 }

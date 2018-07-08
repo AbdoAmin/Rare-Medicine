@@ -1,6 +1,7 @@
 package com.example.abdoamin.RareMedicine.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,16 +35,16 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
         this.mContext = context;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_medicine, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         holder.bind(position);
     }
@@ -61,7 +62,8 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
 
     }
 
-    public Medicine getMedicine(int position) {
+
+    private Medicine getMedicine(int position) {
         return medicineList.get(position);
     }
 
@@ -69,7 +71,7 @@ public class MedicineRecycleAdapter extends RecyclerView.Adapter<MedicineRecycle
         @BindView(R.id.adapter_medicine_item_medicine_name)
         TextView medicineName;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

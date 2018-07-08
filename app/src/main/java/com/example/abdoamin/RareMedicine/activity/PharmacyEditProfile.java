@@ -111,7 +111,7 @@ public class PharmacyEditProfile extends AppCompatActivity implements OnMapReady
                 editPharmacyProfile();
                 return true;
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                this.onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -198,7 +198,9 @@ public class PharmacyEditProfile extends AppCompatActivity implements OnMapReady
 
     private void editPharmacyProfile(){
         Utiltis.editPharmacyInfo(this,Utiltis.currentUser.getUid(),imageUri,pharmacyAddress.getText().toString(),
-                pharmacyPhone.getText().toString(),pharmacyName.getText().toString(),pharmacyLocation.latitude,pharmacyLocation.longitude);
+                pharmacyPhone.getText().toString(),pharmacyName.getText().toString()
+                ,pharmacyLocation!=null?pharmacyLocation.latitude:0
+                ,pharmacyLocation!=null?pharmacyLocation.longitude:0);
     }
 
     @Override

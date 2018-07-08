@@ -48,14 +48,21 @@ public class AddNewMedicineActivity extends AppCompatActivity {
         String medicineId = medicineIdEditText.getText().toString();
         String medicineName = medicineNameEditText.getText().toString();
         if (!medicineId.equals("") && !medicineName.equals("")) {
-            Utiltis.addNewMedicine(this, medicineId, medicineName);
+            Utiltis.sendRequestAddNewMedicine(this, medicineId, medicineName);
         }
+        clearText();
 
     }
 
     @OnClick(R.id.add_medicine_activity_barcode_btn)
     void openBarcodeActivity() {
         Utiltis.barCode(this);
+    }
+    void clearText(){
+        medicineIdEditText.setText("");
+        medicineNameEditText.setText("");
+        medicineIdEditText.setEnabled(true);
+
     }
 
 }

@@ -1,4 +1,16 @@
 <resources>
+    <string name="latitude_map" translatable="false">latitude</string>
+    <string name="longitude_map" translatable="false">longitude</string>
+    <string name="img_map" translatable="false">img</string>
+    <string name="name_map" translatable="false">name</string>
+    <string name="specificItemClickPosition" translatable="false">specificItemClickPosition</string>
+    <string name="activity_name" translatable="false">activity</string>
+    <string name="pharmacy_position" translatable="false">position</string>
+    <string name="CURRENT_MODE" translatable="false">Current Application User Mode</string>
+    <string name="default_image_profile" translatable="false"><![CDATA[https://firebasestorage.googleapis.com/v0/b/rare-medicine.appspot.com/o/pharmacyProfile%2Flogonew.png?alt=media&token=bdce162d-fffc-42a7-baaa-dffb401cb2dc]]></string>
+    <string name="medicine_id" translatable="false">medicine id</string>
+
+
     <string name="app_name">Rare Medicine</string>
     <string name="med_exist">This medicine is already exist</string>
     <string name="med_add_success">This medicine was successfully added </string>
@@ -14,19 +26,15 @@
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_pharmacy_map">Map</string>
-    <string name="latitude_map" translatable="false">latitude</string>
-    <string name="longitude_map" translatable="false">longitude</string>
-    <string name="img_map" translatable="false">img</string>
-    <string name="name_map" translatable="false">name</string>
+
     <string name="email_login">Email</string>
     <string name="password_login">Password</string>
     <string name="login">login</string>
     <string name="register">Register</string>
     <string name="forget_password">Forget password?</string>
-    <string name="activity_name" translatable="false">activity</string>
+
     <string name="splash_screen">Splash screen</string>
-    <string name="pharmacy_position" translatable="false">position</string>
-    <string name="CURRENT_MODE" translatable="false">Current Application User Mode</string>
+
     <string name="next">Next</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="pharmacist">Pharmacist</string>
@@ -34,7 +42,6 @@
     <string name="verify">Verify your email.</string>
     <string name="resend_verification">Resend verification</string>
     <string name="logout">Log out</string>
-    <string name="default_image_profile" translatable="false"><![CDATA[https://firebasestorage.googleapis.com/v0/b/rare-medicine.appspot.com/o/pharmacyProfile%2Flogonew.png?alt=media&token=bdce162d-fffc-42a7-baaa-dffb401cb2dc]]></string>
     <string name="pharmacy_name">Pharmacy Name<font color="#ff0000">*</font></string>
     <string name="address">Address</string>
     <string name="pharmacy_phone">Pharmacy Phone</string>

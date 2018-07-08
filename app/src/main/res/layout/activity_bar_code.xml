@@ -21,6 +21,7 @@
             app:gvb_code_format="code_39|aztec"
             app:gvb_flash="false"
             app:gvb_rect_colors="@array/rect_color" />
+
     </RelativeLayout>
 
     <LinearLayout

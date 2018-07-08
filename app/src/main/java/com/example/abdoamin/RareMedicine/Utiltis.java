@@ -1,29 +1,19 @@
 package com.example.abdoamin.RareMedicine;
 
 import android.app.Activity;
-import android.app.Application;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.AsyncTask;
+
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +31,7 @@ import com.example.abdoamin.RareMedicine.activity.PharmacyProfileActivity;
 import com.example.abdoamin.RareMedicine.activity.SignUpContinueActivity;
 import com.example.abdoamin.RareMedicine.activity.SwitchModeActivity;
 import com.example.abdoamin.RareMedicine.adapter.MedicineRecycleAdapter;
+import com.example.abdoamin.RareMedicine.adapter.RequestMedicineRecycleAdapter;
 import com.example.abdoamin.RareMedicine.dialog.Loading;
 import com.example.abdoamin.RareMedicine.object.Location;
 import com.example.abdoamin.RareMedicine.object.Medicine;
@@ -67,11 +58,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -91,10 +77,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Utiltis {
 
+    static public final String APP_CURRENT_VERSION="1";
+
     //user Latitude
-    public static double userLat;
+    private static double userLat;
     //user Longitude
-    public static double userLng;
+    private static double userLng;
     //nearby PH list Founded
     public static List<Pharmacy> nearbyPharmacyList;
     //all medicine list at system
@@ -102,12 +90,12 @@ public class Utiltis {
     //all pharmacy medicine exist
     public static List<Medicine> mMedicineList;
     //current profile data author pharmacy
-    public static Pharmacy currentPharmacy;
+    private static Pharmacy currentPharmacy;
     //for author pharmacy
     public static FirebaseAuth mAuth;
     public static FirebaseUser currentUser;
     //for search algorithm
-    static Double targetDistance = 650.0;
+    private static Double targetDistance = 650.0;
 
     private static Loading loadingDialog;
 
@@ -115,7 +103,7 @@ public class Utiltis {
     private static List<ValueEventListener> mValueEventListenerList = new ArrayList<>();
 
     //current mode of program used by preference
-    static public final String MODE_NONE = "None";
+    private static final String MODE_NONE = "None";
     static public final String MODE_USER = "User";
     static public final String MODE_PHARMACIST = "Pharmacist";
     static public final String MODE_PHARMACIST_NONE = "Un signed Pharmacist";
@@ -166,7 +154,7 @@ public class Utiltis {
                                                 Pharmacy pharmacy = new Pharmacy(name, new Location(lat, lng), dist, address, img, phone);
                                                 if (!nearbyPharmacyList.contains(pharmacy))
                                                     nearbyPharmacyList.add(pharmacy);
-                                                Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
+//                                                Toast.makeText(mContext, nearbyPharmacyList.get(0).getName(), Toast.LENGTH_LONG).show();
                                                 if (pharmacyId.equals(pharmacyIdList.get(pharmacyIdList.size() - 1))) {
                                                     if (nearbyPharmacyList.size() < 10 && pharmacyIdList.size() > 11) {
                                                         targetDistance *= 2;
@@ -183,7 +171,7 @@ public class Utiltis {
                                         }
 
                                         @Override
-                                        public void onCancelled(DatabaseError databaseError) {
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                         }
                                     };
@@ -197,7 +185,7 @@ public class Utiltis {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     };
@@ -217,7 +205,6 @@ public class Utiltis {
     }
 
 
-    //TODO: not implemented yet
     static private void getNearbyPharmacy() {
         if (nearbyPharmacyList != null) {
             sortList();
@@ -272,7 +259,6 @@ public class Utiltis {
     }
 
 
-    //TODO: Set which Activity will start from ui
     //get result barcode from camera to Search Activity
     static public void barCodeResult(Context mContext, String code, String activity) {
         Intent intent;
@@ -303,7 +289,7 @@ public class Utiltis {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
 //                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
             }
@@ -332,7 +318,7 @@ public class Utiltis {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 //                Toast.makeText(mContext, "Faild To search", Toast.LENGTH_LONG).show();
             }
         };
@@ -345,7 +331,7 @@ public class Utiltis {
 
     //TODO make aprove by : add in DB FB child named : aprovement , when admin open (his ui) apper to list of requestes (yes mean make this quesry by get all Data from FB)
     //add new medicine by admin or pharmacist
-    static public void addNewMedicine(final Context mContext, final String medID, final String name) {
+    private static void addNewMedicine(final Context mContext, final String medID, final String name) {
         isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
             public void onResult(Boolean object) {
@@ -359,7 +345,6 @@ public class Utiltis {
                     mDatabaseReference = mFirebaseDatabase.getReference("medicine/");
                     mDatabaseReference.child(medID).setValue(nameKey);
                     Toast.makeText(mContext, mContext.getString(R.string.med_add_success), Toast.LENGTH_LONG).show();
-                    NavUtils.navigateUpFromSameTask((Activity) mContext);
                 } else {
                     Toast.makeText(mContext, mContext.getString(R.string.med_exist), Toast.LENGTH_LONG).show();
                 }
@@ -380,14 +365,14 @@ public class Utiltis {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //check if found
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.getValue() != null ) {
                     mReturnValueResult.onResult(new ArrayList<>(((HashMap<String, String>) dataSnapshot.getValue()).keySet()).get(0));
                 } else
                     mReturnValueResult.onResult(null);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(mContext, mContext.getString(R.string.error_search), Toast.LENGTH_LONG).show();
             }
         };
@@ -399,7 +384,7 @@ public class Utiltis {
 
 
     //add all medicine in list to customer||pharmacist to search||add med
-    static public void getAllMedicineInList(final Context mContext, final EditText searchEditText, final String barCodeResult, final RecyclerView mRecyclerView, final MedicineRecycleAdapter mMedicineRecycleAdapter, final ReturnValueResult<List<Medicine>> allMedicineListWaitingOrderReturnVaule) {
+    static public void getAllRareMedicineInRecyclerView(final Context mContext, final EditText searchEditText, final String barCodeResult, final RecyclerView mRecyclerView, final MedicineRecycleAdapter mMedicineRecycleAdapter, final ReturnValueResult<List<Medicine>> allMedicineListWaitingOrderReturnVaule) {
         FirebaseDatabase mFirebaseDatabase;
         final DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -417,7 +402,6 @@ public class Utiltis {
                             allSystemMedicineList.add(medicine);
                     }
                     allMedicineListWaitingOrderReturnVaule.onResult(allSystemMedicineList);
-                    //TODO call into PH add, customer search
                     mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
                     mMedicineRecycleAdapter.addList(allSystemMedicineList);
                     mRecyclerView.setAdapter(mMedicineRecycleAdapter);
@@ -434,7 +418,7 @@ public class Utiltis {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(mContext, mContext.getString(R.string.error_search), Toast.LENGTH_LONG).show();
             }
         };
@@ -445,7 +429,8 @@ public class Utiltis {
     }
 
 
-    //TODO: put into ui , get medicine info ,, 2 view customer,PH
+
+
     static public void getPharmacyProfileInfo(Context mContext, final String pharmacyID, final ReturnValueResult<Pharmacy> returnValueResult, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
         //loading dialoge start
        showLoadingDialog(mContext);
@@ -470,7 +455,7 @@ public class Utiltis {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
 
@@ -496,7 +481,7 @@ public class Utiltis {
 
 
     //show all Pharmacy on map from pressing button in result activity
-    static public void showAllNearbyPharmacyOnMap(List<Pharmacy> pharmacyList, GoogleMap map) {
+    static public void showAllNearbyPharmacyOnMap(List<Pharmacy> pharmacyList, GoogleMap map,int specificItemClickPosition ) {
         Pharmacy theNearbyPharmacy = pharmacyList.get(0);
         LatLng theNearbyPharmcyLatLng = new LatLng(theNearbyPharmacy.getLatitude(), theNearbyPharmacy.getLongitude());
         map.addMarker(new MarkerOptions()
@@ -506,7 +491,6 @@ public class Utiltis {
 //                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
 //                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left//visibilty trancparent of markker
         );
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(theNearbyPharmcyLatLng, 15));
         for (Pharmacy pharmacy :
                 pharmacyList) {
             if (pharmacy == theNearbyPharmacy)
@@ -520,6 +504,19 @@ public class Utiltis {
 //                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left//visibilty trancparent of markker
             );
         }
+        if(specificItemClickPosition>0){
+            Pharmacy clickedPharmacy = pharmacyList.get(specificItemClickPosition);
+            LatLng clickedPharmacyLatLng = new LatLng(clickedPharmacy.getLatitude(), clickedPharmacy.getLongitude());
+            map.addMarker(new MarkerOptions()
+                            .position(clickedPharmacyLatLng)
+                            .title(clickedPharmacy.getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+//                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mariosmall))
+//                      .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left//visibilty trancparent of markker
+            );
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(clickedPharmacyLatLng, 16));
+        }
+        else map.moveCamera(CameraUpdateFactory.newLatLngZoom(theNearbyPharmcyLatLng, 15));
 
     }
 
@@ -600,7 +597,6 @@ public class Utiltis {
             }
         };
         showLoadingDialog(mContext);
-        final Uri[] downloadUrl = new Uri[1];
         if (imageURI != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
 //            Uri file = Uri.fromFile(new File(imageURI));
@@ -609,8 +605,7 @@ public class Utiltis {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    downloadUrl[0] = taskSnapshot.getDownloadUrl();
-                    returnValueResult.onResult(downloadUrl[0]);
+                    returnValueResult.onResult(taskSnapshot.getMetadata().getReference().getDownloadUrl().getResult());
                 }
             });
         } else {
@@ -626,12 +621,12 @@ public class Utiltis {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    //todo greate function put in signup
                     Utiltis.currentMode = Utiltis.MODE_PHARMACIST;
                     currentUser = task.getResult().getUser();
                     setUpMyPreferenceMode(mContext, MODE_PHARMACIST);
                     Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
                     mContext.startActivity(intent);
+                    ((Activity)mContext).finish();
                 } else {
                     Toast.makeText(mContext, "This Email Not Registed,or Incorrect Password", Toast.LENGTH_SHORT).show();
                 }
@@ -668,7 +663,7 @@ public class Utiltis {
 //        getPharmacyProfileInfo(pharmacyID, infoReturnValueResult);
 //    }
 
-    static public void getPharmacyProfileMedicine(final String pharmacyID, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
+    private static void getPharmacyProfileMedicine(final String pharmacyID, final ReturnValueResult<Pharmacy> medicineReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -705,7 +700,7 @@ public class Utiltis {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 // Failed to read value
 //                Toast.makeText(mContext, "Faild To Log In", Toast.LENGTH_LONG).show();
             }
@@ -716,7 +711,7 @@ public class Utiltis {
     }
 
 
-    static public void addMedicineToPharmacy(final String pharmacyID, final String medicineID, final ReturnValueResult<Boolean> taskReturnValueResult) {
+    static void addMedicineToPharmacy(final String pharmacyID, final String medicineID, final ReturnValueResult<Boolean> taskReturnValueResult) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -764,21 +759,31 @@ public class Utiltis {
                 mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case R.id.user_menu_switch_mode:
-                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
-                ((Activity) mContext).finish();
+                switchMode(mContext);
+                break;
+            case R.id.pharmacist_menu_edit_add_medicine:
+                mContext.startActivity(new Intent(mContext, AddNewMedicineActivity.class));
                 break;
         }
 
     }
 
+    private static void switchMode(Context mContext) {
+        Intent intent=new Intent(mContext, SwitchModeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
+        ((Activity) mContext).getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        ((Activity) mContext).finish();
+    }
+
     static private void pharmacistMenuOnSelect(Context mContext, int itemMenuID) {
+
         switch (itemMenuID) {
             case R.id.user_menu_search_medicine:
                 mContext.startActivity(new Intent(mContext, CustomerSearchActivity.class));
                 break;
             case R.id.pharmacist_menu_profile:
-                Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
-                mContext.startActivity(intent);
+                mContext.startActivity(new Intent(mContext, PharmacyProfileActivity.class));
                 break;
             case R.id.pharmacist_menu_edit_profile:
                 mContext.startActivity(new Intent(mContext, PharmacyEditProfile.class));
@@ -787,17 +792,22 @@ public class Utiltis {
                 mContext.startActivity(new Intent(mContext, AddNewMedicineActivity.class));
                 break;
             case R.id.pharmacist_menu_log_out:
-                mAuth.signOut();
-                currentMode = MODE_PHARMACIST_NONE;
-                mContext.startActivity(new Intent(mContext, LogInActivity.class));
-                ((Activity) mContext).finish();
+                logOut(mContext);
                 break;
             case R.id.pharmacist_menu_switch_mode:
-                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
-                ((Activity) mContext).finish();
+                switchMode(mContext);
                 break;
         }
 
+    }
+
+    public static void logOut(Context mContext) {
+        mAuth.signOut();
+        currentMode = MODE_PHARMACIST_NONE;
+        setUpMyPreferenceMode(mContext,currentMode);
+        mContext.startActivity(new Intent(mContext, LogInActivity.class));
+        ((Activity) mContext).getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        ((Activity) mContext).finish();
     }
 
     static public void noneModeSelect(Context mContext, String mode) {
@@ -820,8 +830,7 @@ public class Utiltis {
     static private void NonePharmacistMenuOnSelect(Context mContext, int itemMenuID) {
         switch (itemMenuID) {
             case R.id.pharmacist_menu_switch_mode:
-                mContext.startActivity(new Intent(mContext, SwitchModeActivity.class));
-                ((Activity) mContext).finish();
+                switchMode(mContext);
                 break;
         }
 
@@ -903,6 +912,9 @@ public class Utiltis {
 
 
     }
+    private void header(){
+
+    }
 
     static public void editPharmacyInfo(final Context mContext, final String userID, final Uri imageURI, final String address, final String phone, final String name, final double latitude, final double longitude) {
 
@@ -934,9 +946,11 @@ public class Utiltis {
                 Intent intent = new Intent(mContext, PharmacyProfileActivity.class);
                 mContext.startActivity(intent);
                 ((Activity) mContext).finish();
+                if(loadingDialog.isShowing())
+                    loadingDialog.dismiss();
             }
         };
-        final Uri[] downloadUrl = new Uri[1];
+        showLoadingDialog(mContext);
         if (imageURI != null) {
             FirebaseStorage storage = FirebaseStorage.getInstance();
 //            Uri file = Uri.fromFile(new File(imageURI));
@@ -945,8 +959,7 @@ public class Utiltis {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                    downloadUrl[0] = taskSnapshot.getDownloadUrl();
-                    returnValueResult.onResult(downloadUrl[0]);
+                    returnValueResult.onResult(taskSnapshot.getMetadata().getReference().getDownloadUrl().getResult());
                 }
             });
         } else {
@@ -965,8 +978,7 @@ public class Utiltis {
 
 
     //request medicine
-    //todo:accept request function implementation
-    //todo:refuse request function implementation
+
     static public void sendRequestAddNewMedicine(final Context mContext, final String medID, final String name) {
         isMedicineExist(medID, new ReturnValueResult<Boolean>() {
             @Override
@@ -998,9 +1010,10 @@ public class Utiltis {
 
     static public void acceptRequestAddNewMedicine(Context mContext, String medID, String name) {
         addNewMedicine(mContext, medID, name);
+        declineRequestAddNewMedicine(mContext, medID);
     }
 
-    static public void refuseRequestAddNewMedicine(final Context mContext, final String medID) {
+    static public void declineRequestAddNewMedicine(final Context mContext, final String medID) {
         FirebaseDatabase mFirebaseDatabase;
         DatabaseReference mDatabaseReference;
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -1015,6 +1028,45 @@ public class Utiltis {
             }
         });
     }
+
+    static public void getRequestMedicineInRecyclerView(final Context mContext, final RecyclerView mRecyclerView, final RequestMedicineRecycleAdapter mRequestMedicineRecycleAdapter, final ReturnValueResult<List<Medicine>> allMedicineListWaitingOrderReturnVaule) {
+            FirebaseDatabase mFirebaseDatabase;
+        final DatabaseReference mDatabaseReference;
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference("request_medicine/");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //check if found
+                if (dataSnapshot.getValue() != null) {
+                    //creat list of medicine that will pass to recycleView Adpter
+                    List<Medicine> temp = new ArrayList<>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Medicine medicine = new Medicine((String) child.child("name").getValue(), child.getKey());
+                        if (!temp.contains(medicine))
+                            temp.add(medicine);
+                    }
+                    allMedicineListWaitingOrderReturnVaule.onResult(temp);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+                    mRequestMedicineRecycleAdapter.addList(temp);
+                    mRecyclerView.setAdapter(mRequestMedicineRecycleAdapter);
+
+                } else {
+                    Toast.makeText(mContext, mContext.getString(R.string.no_med_in_firebase), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(mContext, mContext.getString(R.string.error_search), Toast.LENGTH_LONG).show();
+            }
+        };
+        mDatabaseReference.addListenerForSingleValueEvent(valueEventListener);
+        mDatabaseReferenceList.add(mDatabaseReference);
+        mValueEventListenerList.add(valueEventListener);
+
+    }
+
 
 
     static public Boolean searchAboutAllCharacter(String searchedText, String object) {
@@ -1040,7 +1092,7 @@ public class Utiltis {
     }
 
 
-    static public String mileToKmMeterToStringFormat(Double mile) {
+    static public String mileToKm_MeterToStringFormat(Double mile) {
         Double meter = mile * 1609.344;
         return (int) (meter / 1000) > 0 ? String.valueOf(((int) (meter / 1000))) + "Km " + String.valueOf(((int) (meter % 1000))) + "m" : String.valueOf(((int) (meter % 1000))) + "m";
     }
@@ -1051,6 +1103,8 @@ public class Utiltis {
         mList.clear();
         mList.addAll(hs);
     }
+
+
 
     //this interface act between function and caller to get a return value form background thread
     public interface ReturnValueResult<T> {
